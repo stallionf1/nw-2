@@ -11,15 +11,10 @@
 		<title>Welcome</title>
 	</head> 
 	<body>
-		<c:url value="/showMessage.html" var="messageUrl" />
-		<a href="${messageUrl}">Click to enter</a>
-		
-		
-		<form action="something" method="get">
-			 IP: <input type="text" name="entered_ip" />
-			 </br>
-		     additional field <input type="text" name="some_more_data" />
-		     <input type="submit" value="submit" />
-		</form>
+		hhhhhh weather response.
+		<br/>
+		<h2>${a1}</h2>
+		<h2>${a2}</h2>
+		<h2>${a3}</h2>
 	</body>
 </html>
