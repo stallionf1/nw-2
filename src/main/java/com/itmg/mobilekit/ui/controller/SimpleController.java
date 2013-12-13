@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.itmg.mobilekit.api.NewsContent;
+import com.itmg.mobilekit.api.response.NewsContentAO;
 
 @Controller
 public class SimpleController {
@@ -212,9 +212,9 @@ public class SimpleController {
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
-		NewsContent resp = null;
+		NewsContentAO resp = null;
 		try {
-			resp = mapper.readValue(responseBody, NewsContent.class);
+			resp = mapper.readValue(responseBody, NewsContentAO.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,6 +1,6 @@
-package com.itmg.mobilekit.api;
+package com.itmg.mobilekit.api.response;
 
-public class NewsContent {
+public class NewsContentAO implements APIResponseObject {
 
 	private String news_id;
 	private String news_url;
@@ -10,7 +10,6 @@ public class NewsContent {
 	private String news_title;
 	private String news_content;
 	private boolean parsed;
-	
 	
 	public String getNews_id() {
 		return news_id;
