@@ -1,6 +1,7 @@
 package com.itmg.mobilekit.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,23 +12,29 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import com.itmg.mobilekit.api.response.CountryAO;
+import com.itmg.mobilekit.api.response.NewsContentAO;
+
 public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	
 	@Override
-	public void listAllCountries() {
+	public List<CountryAO> listAllCountries() {
 		// TODO Auto-generated method stub
-		System.out.println("--- asked to get list of countries ----- ");
+		return null;
 	}
 
 	@Override
-	public void listMainNews() {
+	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) {
 		// TODO Auto-generated method stub
-		System.out.println("--- asked to get list of all main news ----- ");
-		
-		
+		return null;
 	}
-	
-	
+
+	@Override
+	public List<NewsContentAO> getDetailedNewsContent(String newsID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private void test() {
 		String link = "http://newshubtest.org/api/getDetailedNewsContent?accessToken=ec5e7622a39ba5a09e87fabcce102851&newsID=1547";
 		
@@ -57,7 +64,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		} finally {
 			try {
 				httpclient.close();
-			} catch (IOException e) {
+				} catch (IOException e) {
 			}
 		}
 	}
