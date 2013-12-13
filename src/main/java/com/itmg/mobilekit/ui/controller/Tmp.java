@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.parser.ui.controller;
+package com.itmg.mobilekit.ui.controller;
 
 import java.io.IOException;
 

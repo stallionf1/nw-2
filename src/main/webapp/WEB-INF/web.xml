@@ -20,6 +20,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     
+    <listener>
+		<listener-class>com.itmg.mobilekit.ui.context.MobileKitServletContextListener</listener-class>
+	</listener>
+    
     
     <!--
 		- Servlet that dispatches request to registered handlers (Controller implementations).

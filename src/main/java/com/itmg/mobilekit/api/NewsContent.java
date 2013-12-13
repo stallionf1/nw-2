@@ -1,4 +1,4 @@
-package model;
+package com.itmg.mobilekit.api;
 
 public class NewsContent {
 

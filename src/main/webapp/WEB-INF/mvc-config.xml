@@ -8,7 +8,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- Uncomment and your base-package here: -->
-	<context:component-scan base-package="com.itmg.mobilekit.parser.ui.controller" />
+	<context:component-scan base-package="com.itmg.mobilekit.ui.controller" />
 
 	<mvc:annotation-driven />
 
@@ -19,6 +19,7 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
+   <!-- 
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
@@ -30,5 +31,9 @@
 	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 		<property name="supportedMediaTypes" value="application/json" />
 	</bean>
+	-->
+	
+	<bean id="service" class="com.itmg.mobilekit.service.MobileKitAPIServiceImpl">
+	</bean> 
 	
 </beans>
