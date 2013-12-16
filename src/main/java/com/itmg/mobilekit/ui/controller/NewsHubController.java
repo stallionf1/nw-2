@@ -18,6 +18,19 @@ public class NewsHubController {
 	@Autowired
 	private MobileKitAPIService service;
 	
+	@RequestMapping("/")
+	public ResponseEntity<String> handleMainPageContent(HttpServletRequest req, HttpServletResponse response) {
+		System.out.println("--- executing handleMainPageContent method -------");
+		
+		//WrappedObject homeContent = service.loadHomePageContent();
+		//return new ResponseEntity<String>(homeContent.getHtml(), HttpStatus.OK);
+		
+		
+		return new ResponseEntity<String>("all_main_page_data", HttpStatus.OK);
+	}
+	
+	
+	//Test executions...
 	@RequestMapping("/countries")
 	public ResponseEntity<String> listAllCountries(HttpServletRequest req, HttpServletResponse response) {
 		

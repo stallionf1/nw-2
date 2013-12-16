@@ -1,5 +1,7 @@
 package com.itmg.mobilekit.api.response;
 
+import java.util.Date;
+
 public class NewsContentAO implements APIResponseObject {
 
 	private String news_id;
@@ -68,6 +70,11 @@ public class NewsContentAO implements APIResponseObject {
 				+ parsed + "]";
 	}
 	
+	@Override
+	public Date deteReceived() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 //	{"news_id":1547,"news_url":"http://www.rbc.ua/ukr/news/sport/-dlya-dnepra-printsipialno-zanyat-pervoe-mesto---huande-12122013115700",
 //		"img_src":"http://www.rbc.ua/static/img/s/7/s7fp7hp4tgg_250x200.jpg",

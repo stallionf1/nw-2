@@ -1,5 +1,7 @@
 package com.itmg.mobilekit.api.response;
 
+import java.util.Date;
+
 public class CountryAO implements APIResponseObject {
 
 	private String code;
@@ -24,5 +26,11 @@ public class CountryAO implements APIResponseObject {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Override
+	public Date deteReceived() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

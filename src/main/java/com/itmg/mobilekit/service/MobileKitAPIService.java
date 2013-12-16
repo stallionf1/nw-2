@@ -13,4 +13,6 @@ public interface MobileKitAPIService {
 	
 	List<NewsContentAO> getDetailedNewsContent(String newsID);
 	
+	void loadHomePageContent();
+	
 }
