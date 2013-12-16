@@ -18,9 +18,11 @@ public class NewsHubController {
 	@Autowired
 	private MobileKitAPIService service;
 	
-	@RequestMapping("/")
+	@RequestMapping("/api")
 	public ResponseEntity<String> handleMainPageContent(HttpServletRequest req, HttpServletResponse response) {
 		System.out.println("--- executing handleMainPageContent method -------");
+		
+		service.loadHomePageContent();
 		
 		//WrappedObject homeContent = service.loadHomePageContent();
 		//return new ResponseEntity<String>(homeContent.getHtml(), HttpStatus.OK);
