@@ -179,6 +179,15 @@
 			<version>4.0</version>
 		</dependency>
 
+		<!-- Test new json implementation: Gson. -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		
+
+
 
 	</dependencies>
 

@@ -1,6 +1,7 @@
 package com.itmg.mobilekit.api.response;
 
 import java.util.Date;
+import java.util.List;
 
 public class CountryAO implements APIResponseObject {
 
@@ -8,6 +9,7 @@ public class CountryAO implements APIResponseObject {
 	private String name;
 	private String url;
 	
+	private List<CountryAO> countries;
 	
 	public String getCode() {
 		return code;
@@ -33,4 +35,19 @@ public class CountryAO implements APIResponseObject {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public List<CountryAO> getCountries() {
+		return countries;
+	}
+	public void setCountries(List<CountryAO> countries) {
+		this.countries = countries;
+	}
+	
+	@Override
+	public String toString() {
+		return "CountryAO [code=" + code + ", name=" + name + ", url=" + url
+				+ "]";
+	}
+	
+	
 }

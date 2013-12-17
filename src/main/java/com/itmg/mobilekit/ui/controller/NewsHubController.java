@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itmg.mobilekit.service.MobileKitAPIService;
+import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
 @Controller
 @RequestMapping("/news")
@@ -22,7 +23,12 @@ public class NewsHubController {
 	public ResponseEntity<String> handleMainPageContent(HttpServletRequest req, HttpServletResponse response) {
 		System.out.println("--- executing handleMainPageContent method -------");
 		
-		service.loadHomePageContent();
+		try {
+			service.loadHomePageContent();
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//WrappedObject homeContent = service.loadHomePageContent();
 		//return new ResponseEntity<String>(homeContent.getHtml(), HttpStatus.OK);
@@ -36,7 +42,12 @@ public class NewsHubController {
 	@RequestMapping("/countries")
 	public ResponseEntity<String> listAllCountries(HttpServletRequest req, HttpServletResponse response) {
 		
-		service.listAllCountries();
+		try {
+			service.listAllCountries();
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return new ResponseEntity<String>("countries_list_called", HttpStatus.OK);
 	}

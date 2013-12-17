@@ -1,6 +1,10 @@
 package com.itmg.mobilekit.service;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,26 +13,38 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
 import com.itmg.mobilekit.common.Constants;
+import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
 public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
+	private final static Logger logger = LoggerFactory.getLogger(MobileKitAPIServiceImpl.class);
+	
 	@Override
-	public List<CountryAO> listAllCountries() {
+	public List<CountryAO> listAllCountries() throws MobileKitServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -41,16 +57,16 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 
 	@Override
-	public List<NewsContentAO> getDetailedNewsContent(String newsID) {
+	public List<NewsContentAO> getDetailedNewsContent(String newsID)throws MobileKitServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void loadHomePageContent() {
-		// TODO Auto-generated method stub
-
-		final Map<String, HttpResponse> responsesDataMap = new HashMap<String, HttpResponse>();
+	public void loadHomePageContent() throws MobileKitServiceException {
+		logger.debug("Start loading content for main page.");
+		
+		final Map<APITypes, HttpResponse> responsesDataMap = new HashMap<APITypes, HttpResponse>();
 
 		// 1. Get Countries
 		// 2. Get MenuItems
@@ -69,73 +85,98 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
 			for (final HttpGet apiRequest : requestsList) {
 				asyncHttpClient.execute(apiRequest, new FutureCallback<HttpResponse>() {
-
 							@Override
 							public void failed(Exception ex) {
-								System.out.println("!!!!!!!!!!!!  failed !!!!!!!!!");
-								// ------
 								countLatch.countDown();
+								logger.error("Failed to execute request: %s. Nested exception is: %s", apiRequest, ex);
 							}
-
 							@Override
 							public void completed(HttpResponse result) {
-								
-								
-								try {
-									System.out.println("---- response received!" + result.getEntity().getContent().toString());
-								} catch (IllegalStateException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-
-								System.out.println("----------- code answered="+result.getStatusLine().getStatusCode());
-								
-								switch (result.getStatusLine().getStatusCode()) {
-									case HttpStatus.SC_OK: {
-										
-										String matchedApiMethodFromResponse = matchApiFromRequest(apiRequest);
-										responsesDataMap.put(matchedApiMethodFromResponse, result);
+								logger.debug("Request %s completed.", apiRequest);
+								if (requestSuccess(result)) {
+									
+									APITypes matchedApiMethodFromResponse = matchApiFromRequest(apiRequest);
+									
+									responsesDataMap.put(matchedApiMethodFromResponse, result);
+									
+									try {
+										readJSONfromResponse(result);
+									} catch (IllegalStateException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (MobileKitServiceException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
 									}
-									default: {
-										//smth went wrong 
-										System.out.println("***** Error...." + result.getStatusLine().getStatusCode());
-									}
+									
 								}
-								
 								countLatch.countDown();
 							}
 
 							@Override
-							public void cancelled() {
-								System.out.println("!!!!!!!!!!!!  cancelled !!!!!!!!!");
+							public void cancelled() {								
 								countLatch.countDown();
 							}
 						});
 			}
 			countLatch.await();
-			System.out.println("--- httprequests execution finished ---- \n Result: "+responsesDataMap.size());
+			logger.debug("HttGet finished all requests.");
+	
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} finally {
 			try {
 				asyncHttpClient.close();
-				System.out.println("---------- CLOSING SYNC HTTP CLIENT ------");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
+	private boolean requestSuccess(HttpResponse result) {
+		return result.getStatusLine().getStatusCode() >= 200 && result.getStatusLine().getStatusCode() < 300;
+	}
+	
+	private Sample readJSONfromResponse(HttpResponse response) throws MobileKitServiceException, IllegalStateException, IOException {
+		Reader reader = initReaderFromResponse(response);
+		
+		Gson gson = new GsonBuilder().create();
+		
+		JsonParser parser = new JsonParser();
+		JsonObject object = (JsonObject) parser.parse(reader);
+		JsonArray countries = object.getAsJsonArray("countries");
+		
+		
+		Type contriesAoType = new TypeToken<List<CountryAO>>(){}.getType();
+		List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
+		
+		System.out.println("parsed json object is: " + parsedList);
+		
+		System.out.println("parsed count is: " + parsedList.size());
+		return null;
+
+	}
+	
+	private Reader initReaderFromResponse(HttpResponse response) throws IllegalStateException, IOException {
+		HttpEntity entity = response.getEntity();
+
+		ContentType contentType = ContentType.getOrDefault(entity);
+		Charset charset = contentType.getCharset();
+		Reader reader = new InputStreamReader(entity.getContent(), charset);
+
+		return reader;
+	}
+	
+	
 	private List<HttpGet> getMainPageDataRequestsList() {
 
 		String url = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
 
-		System.out.println("---------------- Create httpRequest for URL: " + url);
+	
 
 		List<HttpGet> list = new ArrayList<HttpGet>();
 		list.add(new HttpGet(url));
@@ -143,18 +184,17 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		return list;
 	}
 
-	private String matchApiFromRequest(HttpGet request) {
+	private APITypes matchApiFromRequest(HttpGet request) {
 
 		String uri = request.getRequestLine().getUri();
-		String type = "not_specified";
 		
 		//TODO: delete it and do nice!
-		if (uri.contains(Constants.COUNTRIES_API_NAME)) type = Constants.countriesAO;
-		else if (uri.contains(Constants.MENU_ITEMS_API_NAME)) type = Constants.menuItemsAO;
-		else if (uri.contains(Constants.SLIDE_NEWS_API_NAME)) type = Constants.sliderNewsAO;
-		else if (uri.contains(Constants.REFERENCED_ITEMS_API_NAME)) type = Constants.referencedItemsNameAO;
+		if (uri.contains(Constants.COUNTRIES_API_NAME)) return APITypes.GET_COUNTRIES;
+		else if (uri.contains(Constants.MENU_ITEMS_API_NAME))  return APITypes.GET_MENU_ITEMS;
+		else if (uri.contains(Constants.SLIDE_NEWS_API_NAME))  return APITypes.GET_SLIDER_NEWS;
+		else if (uri.contains(Constants.REFERENCED_ITEMS_API_NAME))  return APITypes.GET_REFERENSED_ITEMS;
 		
-		return type;
+		return APITypes.NOT_SPECIFIED;
 	}
 
 	private void test() {
@@ -193,4 +233,24 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			}
 		}
 	}
+}
+
+class Sample {
+	List<CountryAO> countries;
+
+	public List<CountryAO> getCountries() {
+		return countries;
+	}
+
+	public void setCountries(List<CountryAO> countries) {
+		this.countries = countries;
+	}
+
+	@Override
+	public String toString() {
+		return "Sample [countries=" + countries + "]";
+	}
+	
+	
+	
 }

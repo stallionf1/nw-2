@@ -2,6 +2,7 @@ package com.itmg.mobilekit.ui.controller.test;
 
 import com.itmg.mobilekit.service.MobileKitAPIService;
 import com.itmg.mobilekit.service.MobileKitAPIServiceImpl;
+import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
 public class NewsHubControllerTest {
 
@@ -12,7 +13,12 @@ public class NewsHubControllerTest {
 	public static void main(String[] args) {
 		MobileKitAPIService service = new MobileKitAPIServiceImpl();
 		
-		service.loadHomePageContent();
+		try {
+			service.loadHomePageContent();
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -28,6 +28,6 @@ public class NewsUpdaterImpl implements NewsUpdater {
 	
 	private void updateNewsContent() {
 		logger.info("Start updating news conent.");
-		System.out.println("--- start updating news content ---- ");
+		//System.out.println("--- start updating news content ---- ");
 	}
 }
