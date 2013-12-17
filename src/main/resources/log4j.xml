@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+	<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="DebugAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/mobilekit_newshub-debug.log" />
+		<param name="Append" value="false" />
+		<param name="Threshold" value="DEBUG" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="InfoAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/mobilekit_newshub-info.log" />
+		<param name="Threshold" value="INFO" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	 
+	<appender name="ErrorAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/mobilekit_newshub-error.log" />
+		<param name="Threshold" value="ERROR" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="WarnAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/mobilekit_newshub-warn.log" />
+		<param name="Threshold" value="WARN" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="FatalAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/mobilekit_newshub-fatal.log" />
+		<param name="Threshold" value="FATAL" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="RootAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/mobilekit_newshub-root.log" />
+		<param name="Threshold" value="WARN" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%r %d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	
+	<logger name="com.itmg.mobilekit" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="DebugAppender" />
+		<appender-ref ref="ErrorAppender" />
+		<appender-ref ref="FatalAppender" />
+	</logger>
+	
+</log4j:configuration>

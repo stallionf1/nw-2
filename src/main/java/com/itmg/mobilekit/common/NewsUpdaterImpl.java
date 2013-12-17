@@ -3,13 +3,11 @@ package com.itmg.mobilekit.common;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class NewsUpdaterImpl implements NewsUpdater {
-
 	
-	private static final Logger logger = LoggerFactory.getLogger(NewsUpdaterImpl.class);
+	private static final Logger logger = Logger.getLogger(NewsUpdaterImpl.class);
 	
 	@Override
 	public void update() {

@@ -76,17 +76,12 @@
 		<!-- Hibernate / JPA -->
 		<hibernate.version>4.2.1.Final</hibernate.version>
 
-		<!-- Logging -->
-		<logback.version>1.0.13</logback.version>
-		<slf4j.version>1.7.5</slf4j.version>
-
 		<!-- Test -->
 		<junit.version>4.11</junit.version>
 
 	</properties>
 
 	<dependencies>
-
 		<!-- Spring MVC -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -118,20 +113,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>${spring-framework.version}</version>
-		</dependency>
-
-		<!-- Logging with SLF4J & LogBack -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Hibernate -->
@@ -185,9 +166,12 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.4</version>
 		</dependency>
-		
 
-
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 
 	</dependencies>
 

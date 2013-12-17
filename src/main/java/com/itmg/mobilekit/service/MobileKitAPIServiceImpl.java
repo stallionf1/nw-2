@@ -24,8 +24,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,7 +40,7 @@ import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
 public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
-	private final static Logger logger = LoggerFactory.getLogger(MobileKitAPIServiceImpl.class);
+	private final static Logger logger = Logger.getLogger(MobileKitAPIServiceImpl.class);
 	
 	@Override
 	public List<CountryAO> listAllCountries() throws MobileKitServiceException {
@@ -63,10 +62,10 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 
 	@Override
-	public void loadHomePageContent() throws MobileKitServiceException {
+	public  Map<APITypes, Object> loadHomePageContent() throws MobileKitServiceException {
 		logger.debug("Start loading content for main page.");
 		
-		final Map<APITypes, HttpResponse> responsesDataMap = new HashMap<APITypes, HttpResponse>();
+		final Map<APITypes, Object> responsesDataMap = new HashMap<APITypes, Object>();
 
 		// 1. Get Countries
 		// 2. Get MenuItems
@@ -88,30 +87,26 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 							@Override
 							public void failed(Exception ex) {
 								countLatch.countDown();
-								logger.error("Failed to execute request: %s. Nested exception is: %s", apiRequest, ex);
+								logger.error("Failed to execute request. Nested exception is: ", ex);
 							}
 							@Override
 							public void completed(HttpResponse result) {
-								logger.debug("Request %s completed.", apiRequest);
+								logger.debug("Request " + apiRequest + "completed.");
 								if (requestSuccess(result)) {
 									
-									APITypes matchedApiMethodFromResponse = matchApiFromRequest(apiRequest);
+									APITypes requestedAPI = matchApiFromRequest(apiRequest);
 									
-									responsesDataMap.put(matchedApiMethodFromResponse, result);
-									
+									System.out.println("--api method that was processed: " + requestedAPI.getApiTypeDesciprion());
+										
 									try {
-										readJSONfromResponse(result);
+										responsesDataMap.put(requestedAPI, readJSONfromResponse(result, requestedAPI));
 									} catch (IllegalStateException e) {
-										// TODO Auto-generated catch block
 										e.printStackTrace();
 									} catch (MobileKitServiceException e) {
-										// TODO Auto-generated catch block
 										e.printStackTrace();
 									} catch (IOException e) {
-										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									
 								}
 								countLatch.countDown();
 							}
@@ -135,19 +130,33 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 				e.printStackTrace();
 			}
 		}
+		return responsesDataMap;
 	}
 
 	private boolean requestSuccess(HttpResponse result) {
 		return result.getStatusLine().getStatusCode() >= 200 && result.getStatusLine().getStatusCode() < 300;
 	}
 	
-	private Sample readJSONfromResponse(HttpResponse response) throws MobileKitServiceException, IllegalStateException, IOException {
+	private Sample readJSONfromResponse(HttpResponse response, APITypes requestedAPI) throws MobileKitServiceException, IllegalStateException, IOException {
 		Reader reader = initReaderFromResponse(response);
 		
 		Gson gson = new GsonBuilder().create();
 		
 		JsonParser parser = new JsonParser();
 		JsonObject object = (JsonObject) parser.parse(reader);
+		
+		String dataName = "";
+		
+		switch (requestedAPI) {
+		case GET_COUNTRIES: {
+			dataName = "countries";
+			break;
+		}
+
+		default:
+			break;
+		}
+		
 		JsonArray countries = object.getAsJsonArray("countries");
 		
 		

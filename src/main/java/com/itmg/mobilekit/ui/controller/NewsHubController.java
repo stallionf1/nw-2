@@ -1,5 +1,7 @@
 package com.itmg.mobilekit.ui.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.service.MobileKitAPIService;
 import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
@@ -24,9 +27,9 @@ public class NewsHubController {
 		System.out.println("--- executing handleMainPageContent method -------");
 		
 		try {
-			service.loadHomePageContent();
+			Map<APITypes, Object> mainPageContent = service.loadHomePageContent();
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 		
