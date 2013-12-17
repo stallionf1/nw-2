@@ -9,10 +9,8 @@ import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.exception.MobileKitNewsStorageException;
 
 public class MobileKitNewsStorageImpl implements MobileKitNewsStorage {
-
 	
-	private Map<String, Object> menuItemsStorage = new HashMap<String, Object>();
-	
+	private Map<String, List<MenuItemAO>> menuItemsStorage = new HashMap<String, List<MenuItemAO>>();
 	
 	@Override
 	public void putMenuItemsToStorage(List<MenuItemAO> menuItems) {
