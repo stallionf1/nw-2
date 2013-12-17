@@ -38,7 +38,7 @@ import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
 import com.itmg.mobilekit.common.Constants;
-import com.itmg.mobilekit.service.exception.MobileKitServiceException;
+import com.itmg.mobilekit.exception.MobileKitServiceException;
 
 public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 

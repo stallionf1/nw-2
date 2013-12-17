@@ -13,8 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itmg.mobilekit.api.APITypes;
+import com.itmg.mobilekit.exception.MobileKitServiceException;
 import com.itmg.mobilekit.service.MobileKitAPIService;
-import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
 @Controller
 @RequestMapping("/news")

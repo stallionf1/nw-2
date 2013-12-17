@@ -1,8 +1,8 @@
 package com.itmg.mobilekit.ui.controller.test;
 
+import com.itmg.mobilekit.exception.MobileKitServiceException;
 import com.itmg.mobilekit.service.MobileKitAPIService;
 import com.itmg.mobilekit.service.MobileKitAPIServiceImpl;
-import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 
 public class NewsHubControllerTest {
 

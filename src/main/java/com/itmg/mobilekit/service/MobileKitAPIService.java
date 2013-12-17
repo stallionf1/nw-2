@@ -6,7 +6,7 @@ import java.util.Map;
 import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
-import com.itmg.mobilekit.service.exception.MobileKitServiceException;
+import com.itmg.mobilekit.exception.MobileKitServiceException;
 
 public interface MobileKitAPIService {
 	

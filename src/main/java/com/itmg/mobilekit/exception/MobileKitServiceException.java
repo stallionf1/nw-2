@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.service.exception;
+package com.itmg.mobilekit.exception;
 
 public class MobileKitServiceException extends Exception {
 
