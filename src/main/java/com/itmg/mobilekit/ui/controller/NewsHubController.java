@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,27 +20,25 @@ import com.itmg.mobilekit.service.exception.MobileKitServiceException;
 @RequestMapping("/news")
 public class NewsHubController {
 
+	private final static Logger logger = Logger.getLogger(NewsHubController.class);
+	
 	@Autowired
 	private MobileKitAPIService service;
 	
 	@RequestMapping("/api")
 	public ResponseEntity<String> handleMainPageContent(HttpServletRequest req, HttpServletResponse response) {
-		System.out.println("--- executing handleMainPageContent method -------");
+		logger.debug("Executing <handleMainPageContent> method.");
 		
 		try {
 			Map<APITypes, Object> mainPageContent = service.loadHomePageContent();
+			logger.debug("Parsed content is" + mainPageContent);
+			return new ResponseEntity<String>(mainPageContent.keySet().toString(), HttpStatus.OK);
+			
 		} catch (MobileKitServiceException e) {
-		
-			e.printStackTrace();
+			logger.error("Failed to execute handleMainPageContent method.", e);
+			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
-		
-		//WrappedObject homeContent = service.loadHomePageContent();
-		//return new ResponseEntity<String>(homeContent.getHtml(), HttpStatus.OK);
-		
-		
-		return new ResponseEntity<String>("all_main_page_data", HttpStatus.OK);
 	}
-	
 	
 	//Test executions...
 	@RequestMapping("/countries")

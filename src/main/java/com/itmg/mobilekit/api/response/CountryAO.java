@@ -3,7 +3,7 @@ package com.itmg.mobilekit.api.response;
 import java.util.Date;
 import java.util.List;
 
-public class CountryAO implements APIResponseObject {
+public class CountryAO extends APIResponseObject {
 
 	private String code;
 	private String name;

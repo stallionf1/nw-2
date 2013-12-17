@@ -33,7 +33,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.itmg.mobilekit.api.APITypes;
+import com.itmg.mobilekit.api.response.APIResponseObject;
 import com.itmg.mobilekit.api.response.CountryAO;
+import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
 import com.itmg.mobilekit.common.Constants;
 import com.itmg.mobilekit.service.exception.MobileKitServiceException;
@@ -121,13 +123,13 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			logger.debug("HttGet finished all requests.");
 	
 		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
+			logger.error("Failed to execute HttpClient requests.", e);
+			throw new MobileKitServiceException("Failed to execute HttpClient requests.", e);
 		} finally {
 			try {
 				asyncHttpClient.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Failed to close HttpClient", e);
 			}
 		}
 		return responsesDataMap;
@@ -137,38 +139,64 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		return result.getStatusLine().getStatusCode() >= 200 && result.getStatusLine().getStatusCode() < 300;
 	}
 	
-	private Sample readJSONfromResponse(HttpResponse response, APITypes requestedAPI) throws MobileKitServiceException, IllegalStateException, IOException {
+	private Object readJSONfromResponse(HttpResponse response, APITypes requestedAPI) throws MobileKitServiceException, IllegalStateException, IOException {
 		Reader reader = initReaderFromResponse(response);
-		
-		Gson gson = new GsonBuilder().create();
 		
 		JsonParser parser = new JsonParser();
 		JsonObject object = (JsonObject) parser.parse(reader);
+		Gson gson = new GsonBuilder().create();
 		
-		String dataName = "";
-		
+		//TODO: do smth here....
 		switch (requestedAPI) {
-		case GET_COUNTRIES: {
-			dataName = "countries";
-			break;
-		}
+			case GET_COUNTRIES: {
+				JsonArray countries = object.getAsJsonArray("countries");
+			
+				Type contriesAoType = new TypeToken<List<CountryAO>>(){}.getType();
+				List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
+				
+				return parsedList;
+			}
+			
+			case GET_MENU_ITEMS: {
+				JsonArray countries = object.getAsJsonArray("menu_items");
+				
+				Type aoType = new TypeToken<List<MenuItemAO>>(){}.getType();
+				List<MenuItemAO> parsedList = gson.fromJson(countries, aoType);
+				
+				logger.debug("Received MenuItems list:"+parsedList);
+				
+				return parsedList;
+			}
 
-		default:
-			break;
+			case GET_SLIDER_NEWS: {
+				JsonArray countries = object.getAsJsonArray("slider_news");
+				
+				Type aoType = new TypeToken<List<MenuItemAO>>(){}.getType();
+				List<MenuItemAO> parsedList = gson.fromJson(countries, aoType);
+				
+				return parsedList;
+			}
+
+			case GET_MAIN_NEWS: {
+				JsonArray countries = object.getAsJsonArray("main_news");
+				
+				Type aoType = new TypeToken<List<MenuItemAO>>(){}.getType();
+				List<MenuItemAO> parsedList = gson.fromJson(countries, aoType);
+				
+				return parsedList;
+			}
+			case GET_REFERENSED_ITEMS:
+				break;
+			case NOT_SPECIFIED:
+				break;
+			default:
+				break;
 		}
-		
-		JsonArray countries = object.getAsJsonArray("countries");
-		
-		
-		Type contriesAoType = new TypeToken<List<CountryAO>>(){}.getType();
-		List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
-		
-		System.out.println("parsed json object is: " + parsedList);
-		
-		System.out.println("parsed count is: " + parsedList.size());
+	
 		return null;
 
 	}
+	 
 	
 	private Reader initReaderFromResponse(HttpResponse response) throws IllegalStateException, IOException {
 		HttpEntity entity = response.getEntity();
@@ -183,16 +211,26 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	
 	private List<HttpGet> getMainPageDataRequestsList() {
 
-		String url = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
+		String countries_URL = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
+		//String menu_items_URL = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
+		//String slider_news_URL = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
+		String menu_items_URL = generateMenuItemsURL("UA");
 
-	
-
+		System.out.println("---------" + menu_items_URL);
+		
 		List<HttpGet> list = new ArrayList<HttpGet>();
-		list.add(new HttpGet(url));
+		list.add(new HttpGet(countries_URL));
+		list.add(new HttpGet(menu_items_URL));
 
 		return list;
 	}
 
+	private String generateMenuItemsURL(String countryCode) {
+		String menu_items_URL = Constants.NEWS_HUB_API_URL + Constants.MENU_ITEMS_API_NAME + "?" + Constants.NEWS_HUB_TOKEN + "&countryCode="+countryCode;
+		
+		return menu_items_URL;
+	}
+	
 	private APITypes matchApiFromRequest(HttpGet request) {
 
 		String uri = request.getRequestLine().getUri();

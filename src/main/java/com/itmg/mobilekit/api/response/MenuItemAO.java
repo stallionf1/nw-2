@@ -2,7 +2,7 @@ package com.itmg.mobilekit.api.response;
 
 import java.util.Date;
 
-public class MenuItemAO implements APIResponseObject {
+public class MenuItemAO extends APIResponseObject {
 
 	@Override
 	public Date deteReceived() {

@@ -2,9 +2,8 @@ package com.itmg.mobilekit.api.response;
 
 import java.util.Date;
 
-public interface APIResponseObject {
+public abstract class APIResponseObject {
 
-	Date deteReceived();
-	
+	abstract Date deteReceived();
 	
 }

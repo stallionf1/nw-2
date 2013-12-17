@@ -2,7 +2,7 @@ package com.itmg.mobilekit.api.response;
 
 import java.util.Date;
 
-public class NewsContentAO implements APIResponseObject {
+public class NewsContentAO extends APIResponseObject {
 
 	private String news_id;
 	private String news_url;
