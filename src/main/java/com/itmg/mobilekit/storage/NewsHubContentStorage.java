@@ -5,7 +5,7 @@ import java.util.List;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
-import com.itmg.mobilekit.api.response.ReferenceItemAO;
+import com.itmg.mobilekit.api.response.CategoryNewsAO;
 
 public interface NewsHubContentStorage {
 
@@ -17,6 +17,6 @@ public interface NewsHubContentStorage {
 	List<MenuItemAO> loadMenuItems(String country);
 	List<NewsContentAO> loadMainNews(String country);
 	List<NewsContentAO> loadSliderNews(String country);
-	List<ReferenceItemAO> loadCategoriesItems(String country);
+	List<CategoryNewsAO> loadCategoriesItems(String country);
 	
 }
