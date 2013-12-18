@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
+import com.itmg.mobilekit.api.response.NewsContentAO;
 import com.itmg.mobilekit.exception.MobileKitServiceException;
 import com.itmg.mobilekit.service.MobileKitAPIService;
 
@@ -74,7 +75,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listMenuItems(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<MenuItemAO> list = service.listMenuItems();	
+			List<MenuItemAO> list = service.listMenuItems("UA");	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -94,8 +95,48 @@ public class NewsHubController {
 	}
 	
 	@RequestMapping("/slider_news")
-	public ResponseEntity<String> listAllSliderNews(HttpServletRequest req, HttpServletResponse response) {
+	public ResponseEntity<String> listSliderNews(HttpServletRequest req, HttpServletResponse response) {
 		
-		return new ResponseEntity<String>("slider_news_called", HttpStatus.OK);
+		try {
+			List<NewsContentAO> list = service.listSliderNews("RU");	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("slider_news_items_called", HttpStatus.OK);
+	}
+	
+	@RequestMapping("/main_news")
+	public ResponseEntity<String> listMainNews(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			List<NewsContentAO> list = service.listMainNews("UA", "p1", "NO");	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("slider_news_items_called", HttpStatus.OK);
 	}
 }

@@ -11,6 +11,20 @@ import org.apache.http.entity.ContentType;
 
 public class BaseResponseHandler {
 
+	private String customDataName;
+	
+	public BaseResponseHandler(String customString) {
+		this.customDataName = customString;
+	}
+	
+	public BaseResponseHandler() {
+		
+	}
+	
+	public String getCustomDataName() {
+		return customDataName;
+	}
+
 	public Reader initReaderFromResponse(HttpResponse response) throws IllegalStateException, IOException {
 		HttpEntity entity = response.getEntity();
 

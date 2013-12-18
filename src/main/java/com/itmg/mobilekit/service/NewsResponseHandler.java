@@ -18,20 +18,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.itmg.mobilekit.api.response.CountryAO;
+import com.itmg.mobilekit.api.response.NewsContentAO;
 
-public class CountriesResponseHandler extends BaseResponseHandler implements ResponseHandler<List<CountryAO>>  {
-	
-	public CountriesResponseHandler(String jsonArguments) {
+public class NewsResponseHandler extends BaseResponseHandler implements ResponseHandler<List<NewsContentAO>>{
+
+	public NewsResponseHandler(String jsonArguments) {
 		super(jsonArguments);
 	}
 	
-	public CountriesResponseHandler() {
+	public NewsResponseHandler() {
 		super();
 	}
 	
 	  @Override
-	    public  List<CountryAO> handleResponse(final HttpResponse response) throws IOException {
+	    public  List<NewsContentAO> handleResponse(final HttpResponse response) throws IOException {
 	        StatusLine statusLine = response.getStatusLine();
 	        HttpEntity entity = response.getEntity();
 	        if (statusLine.getStatusCode() >= 300) {
@@ -47,11 +47,10 @@ public class CountriesResponseHandler extends BaseResponseHandler implements Res
 			JsonObject object = (JsonObject) parser.parse(reader);
 	        JsonArray countries = object.getAsJsonArray(getCustomDataName());
 			
-			Type contriesAoType = new TypeToken<List<CountryAO>>(){}.getType();
-			List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
+			Type contriesAoType = new TypeToken<List<NewsContentAO>>(){}.getType();
+			List<NewsContentAO> parsedList = gson.fromJson(countries, contriesAoType);
 			
 			return parsedList;
 	        
-	    }
-
+	    }	
 }

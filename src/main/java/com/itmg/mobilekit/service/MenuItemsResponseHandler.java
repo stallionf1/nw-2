@@ -22,6 +22,14 @@ import com.itmg.mobilekit.api.response.MenuItemAO;
 
 public class MenuItemsResponseHandler extends BaseResponseHandler implements ResponseHandler<List<MenuItemAO>> {
 
+	public MenuItemsResponseHandler(String jsonArgument) {
+		super(jsonArgument);
+	}
+	
+	public MenuItemsResponseHandler() {
+		
+	}
+	
 	 @Override
 	    public  List<MenuItemAO> handleResponse(final HttpResponse response) throws IOException {
 	        StatusLine statusLine = response.getStatusLine();
@@ -37,7 +45,7 @@ public class MenuItemsResponseHandler extends BaseResponseHandler implements Res
 
 	        JsonParser parser = new JsonParser();
 			JsonObject object = (JsonObject) parser.parse(reader);
-	        JsonArray countries = object.getAsJsonArray("menu_items");
+	        JsonArray countries = object.getAsJsonArray(getCustomDataName());
 			
 			Type contriesAoType = new TypeToken<List<MenuItemAO>>(){}.getType();
 			List<MenuItemAO> parsedList = gson.fromJson(countries, contriesAoType);

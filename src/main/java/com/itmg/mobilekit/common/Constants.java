@@ -15,6 +15,7 @@ public interface Constants {
 	static String MENU_ITEMS_API_NAME = "getMenuItems";
 	static String SLIDE_NEWS_API_NAME = "getSliderNews";
 	static String REFERENCED_ITEMS_API_NAME = "getReferencedCategoriesList";
+	static String MAIN_NEWS_API = "getMainPageNews";
 	
 	// API methods:
 	

@@ -16,11 +16,12 @@ public interface MobileKitAPIService {
 	
 	//Done
 	List<CountryAO> listAllCountries() throws  MobileKitServiceException, ClientProtocolException, IOException;
+	//Done
+	List<MenuItemAO> listMenuItems(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException;
+	//Done
+	List<NewsContentAO> listSliderNews(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException;
 	
-	List<MenuItemAO> listMenuItems() throws MobileKitServiceException, ClientProtocolException, IOException;
-	
-	
-	List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) throws MobileKitServiceException;
+	List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) throws MobileKitServiceException, ClientProtocolException, IOException;
 	
 	List<NewsContentAO> getDetailedNewsContent(String newsID) throws MobileKitServiceException;
 	

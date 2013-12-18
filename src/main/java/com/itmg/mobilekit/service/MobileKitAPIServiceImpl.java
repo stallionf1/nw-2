@@ -49,34 +49,51 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getCountriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851");
 
-		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler());
+		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler("countries"));
 		httpclient.close();
 		
 		return myjson;
 	}
 	
 	@Override
-	public List<MenuItemAO> listMenuItems() throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<MenuItemAO> listMenuItems(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getMenuItems?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode=UA");
+		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getMenuItems?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode="+countryCode);
 
-		List<MenuItemAO> myjson = httpclient.execute(httpget, new MenuItemsResponseHandler());
+		List<MenuItemAO> myjson = httpclient.execute(httpget, new MenuItemsResponseHandler("menu_items"));
 		
 		httpclient.close();
 		
 		return myjson;
 	}
+	
+	@Override
+	public List<NewsContentAO> listSliderNews(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getSliderNews?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode="+countryCode);
+
+		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("slider_news"));
+		
+		httpclient.close();
+		
+		return myjson;
+		
+	}
 
 	@Override
-	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) {
-//		CloseableHttpClient httpclient = HttpClients.createDefault();
-//		String link = String.format("%s", Constants.NEWS_HUB_API_URL,)
-//		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getCountriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851");
-//
-//		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler());
-//		httpclient.close();
-
-		return null;
+	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) throws MobileKitServiceException, ClientProtocolException, IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		
+		String url = String.format("%s%s?%s&countryCode=UA&fullContent=YES", Constants.NEWS_HUB_API_URL, Constants.MAIN_NEWS_API, Constants.NEWS_HUB_TOKEN);
+		
+		System.out.println("+++++++++++++++++ string="+url);
+		
+		HttpGet httpget = new HttpGet(url);
+		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("main_news"));
+		
+		httpclient.close();
+		
+		return myjson;	
 	}
 
 	@Override
