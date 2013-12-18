@@ -33,7 +33,7 @@
 	</bean>
 	-->
 	
-	<bean id="service" class="com.itmg.mobilekit.service.MobileKitAPIServiceImpl">
+	<bean id="service" class="com.itmg.mobilekit.core.service.MobileKitAPIServiceImpl">
 	</bean> 
 	
 </beans>

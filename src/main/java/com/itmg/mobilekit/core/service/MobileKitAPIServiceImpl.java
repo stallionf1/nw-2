@@ -14,7 +14,6 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
@@ -23,7 +22,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -33,6 +31,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.itmg.mobilekit.api.APITypes;
+import com.itmg.mobilekit.api.response.CategoryAO;
+import com.itmg.mobilekit.api.response.CategoryNewsAO;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
@@ -86,8 +86,6 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		
 		String url = String.format("%s%s?%s&countryCode=UA&fullContent=YES", Constants.NEWS_HUB_API_URL, Constants.MAIN_NEWS_API, Constants.NEWS_HUB_TOKEN);
 		
-		System.out.println("+++++++++++++++++ string="+url);
-		
 		HttpGet httpget = new HttpGet(url);
 		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("main_news"));
 		
@@ -96,10 +94,69 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		return myjson;	
 	}
 
+	@Deprecated
 	@Override
 	public List<NewsContentAO> getDetailedNewsContent(String newsID)throws MobileKitServiceException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<CategoryAO> loadCategoriesByCountry(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getReferencedCategoriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode="+countryCode);
+
+		List<CategoryAO> myjson = httpclient.execute(httpget, new CategoriesResponseHandler("categories"));
+		
+		httpclient.close();
+		
+		return myjson;
+	}
+	
+	@Override
+	public List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getReferencedNewsByCategory?accessToken=ec5e7622a39ba5a09e87fabcce102851"
+				+ "&countryCode="+countryCode
+				+ "&categoryName="+category);
+
+		List<CategoryNewsAO> myjson = httpclient.execute(httpget, new CategoryNewsResponseHandler("news_links"));
+		
+		httpclient.close();
+		
+		return myjson;
+	}
+	
+	@Override
+	public List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode) throws MobileKitServiceException, 
+																											  ClientProtocolException,
+																											  IOException {
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		
+		String url = String.format("%s%s?%s&countryCode=UA&fullContent=NO&menuItem=%s&pageId=p1", Constants.NEWS_HUB_API_URL, Constants.MENU_NEWS_API, Constants.NEWS_HUB_TOKEN, menuSection);
+		
+		HttpGet httpget = new HttpGet(url);
+		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("menu_news"));
+		
+		httpclient.close();
+		
+		return myjson;
+	
+	}
+	
+	@Override
+	public NewsContentAO loadNewsDetails(String newsID, String countryCode) throws MobileKitServiceException, ClientProtocolException,
+			IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		
+		String url = String.format("%s%s?%s&newsID=%s", Constants.NEWS_HUB_API_URL, Constants.NEWS_DETAILS_API, 
+									Constants.NEWS_HUB_TOKEN, newsID);
+		
+		HttpGet httpget = new HttpGet(url);
+		NewsContentAO myjson = httpclient.execute(httpget, new NewsDetailsResponseHandler());
+		httpclient.close();
+		return myjson;
 	}
 
 	@Override
@@ -276,62 +333,5 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		else if (uri.contains(Constants.REFERENCED_ITEMS_API_NAME))  return APITypes.GET_REFERENSED_ITEMS;
 		
 		return APITypes.NOT_SPECIFIED;
-	}
-
-	private void test() {
-		String link = "http://newshubtest.org/api/getDetailedNewsContent?accessToken=ec5e7622a39ba5a09e87fabcce102851&newsID=1547";
-
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-
-		String responseBody = "failed....";
-		try {
-			HttpGet httpget = new HttpGet(link);
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-				public String handleResponse(final HttpResponse response)
-						throws ClientProtocolException, IOException {
-					int status = response.getStatusLine().getStatusCode();
-					if (status >= 200 && status < 300) {
-						HttpEntity entity = response.getEntity();
-						return entity != null ? EntityUtils.toString(entity)
-								: null;
-					} else {
-						throw new ClientProtocolException(
-								"Unexpected response status: " + status);
-					}
-				}
-			};
-
-			responseBody = httpclient.execute(httpget, responseHandler);
-
-		} catch (ClientProtocolException e) {
-		} catch (IOException e) {
-		} finally {
-			try {
-				httpclient.close();
-			} catch (IOException e) {
-			}
-		}
-	}
-}
-
-class Sample {
-	List<CountryAO> countries;
-
-	public List<CountryAO> getCountries() {
-		return countries;
-	}
-
-	public void setCountries(List<CountryAO> countries) {
-		this.countries = countries;
-	}
-
-	@Override
-	public String toString() {
-		return "Sample [countries=" + countries + "]";
-	}
-	
-	
-	
+	}	
 }

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itmg.mobilekit.api.APITypes;
+import com.itmg.mobilekit.api.response.CategoryAO;
+import com.itmg.mobilekit.api.response.CategoryNewsAO;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
@@ -137,6 +139,99 @@ public class NewsHubController {
 			e.printStackTrace();
 		}
 		
-		return new ResponseEntity<String>("slider_news_items_called", HttpStatus.OK);
+		return new ResponseEntity<String>("failed_to_load_main_news", HttpStatus.OK);
+	}
+	
+
+	@RequestMapping("/categories")
+	public ResponseEntity<String> listCategories(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			List<CategoryAO> list = service.loadCategoriesByCountry("UA");	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("failed_to_load_categories", HttpStatus.OK);
+	}
+	
+	@RequestMapping("/category_news")
+	public ResponseEntity<String> listCategoryNews(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			List<CategoryNewsAO> list = service.loadCategoryNewsByCategoryAndCountry("world", "UA");	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("failed_to_load_category_news", HttpStatus.OK);
+	}
+	
+	@RequestMapping("/menu_news")
+	public ResponseEntity<String> listMenuNews(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			List<NewsContentAO> list = service.loadNewsByMenuSectionAndCountry("world", "UA");	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("failed_to_load_menu_news", HttpStatus.OK);
+	}
+	
+	@RequestMapping("/news_details")
+	public ResponseEntity<String> listNewsDetails(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			NewsContentAO newsData = service.loadNewsDetails("16411", "UA");	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(newsData.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("failed_to_load_news_details", HttpStatus.OK);
 	}
 }

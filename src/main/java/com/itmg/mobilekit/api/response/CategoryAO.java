@@ -24,4 +24,9 @@ public class CategoryAO extends APIResponseObject {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public String toString() {
+		return "CategoryAO [localized_name=" + localized_name + ", name="
+				+ name + "]";
+	}
 }

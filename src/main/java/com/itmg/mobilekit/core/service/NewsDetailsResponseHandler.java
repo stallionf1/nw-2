@@ -2,8 +2,6 @@ package com.itmg.mobilekit.core.service;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
-import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,26 +13,25 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import com.itmg.mobilekit.api.response.CountryAO;
+import com.itmg.mobilekit.api.response.NewsContentAO;
 
-public class CountriesResponseHandler extends BaseResponseHandler implements ResponseHandler<List<CountryAO>>  {
+public class NewsDetailsResponseHandler extends BaseResponseHandler implements ResponseHandler<NewsContentAO> {
+
 	
-	private final static Logger logger = Logger.getLogger(CountriesResponseHandler.class);
+private final static Logger logger = Logger.getLogger(CategoriesResponseHandler.class);
 	
-	public CountriesResponseHandler(String jsonArguments) {
+	public NewsDetailsResponseHandler(String jsonArguments) {
 		super(jsonArguments);
 	}
 	
-	public CountriesResponseHandler() {
+	public NewsDetailsResponseHandler() {
 		super();
 	}
 
 	@Override
-	public List<CountryAO> handleResponse(final HttpResponse response) throws IOException {
+	public NewsContentAO handleResponse(final HttpResponse response) throws IOException {
 		logger.debug("Mapping response content from httpResponse.");
 		
 		StatusLine statusLine = response.getStatusLine();
@@ -52,14 +49,14 @@ public class CountriesResponseHandler extends BaseResponseHandler implements Res
 		Gson gson = new GsonBuilder().create();
 		Reader reader = initReaderFromResponse(response);
 
+		//TODO: this is to much...
 		JsonParser parser = new JsonParser();
 		JsonObject object = (JsonObject) parser.parse(reader);
-		JsonArray countries = object.getAsJsonArray(getCustomDataName());
+		
+		NewsContentAO detailedNews = gson.fromJson(object, NewsContentAO.class);
 
-		Type contriesAoType = new TypeToken<List<CountryAO>>() {}.getType();
-		List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
-
-		logger.debug(String.format("Received %d number of countires records.s", parsedList.size()));
-		return parsedList;
+		logger.debug(String.format("Received %s news details",detailedNews.getNews_id()));
+		return detailedNews;
 	}
+	
 }

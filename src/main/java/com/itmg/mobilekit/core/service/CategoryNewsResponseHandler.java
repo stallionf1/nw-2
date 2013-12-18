@@ -19,22 +19,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.itmg.mobilekit.api.response.CountryAO;
+import com.itmg.mobilekit.api.response.CategoryNewsAO;
 
-public class CountriesResponseHandler extends BaseResponseHandler implements ResponseHandler<List<CountryAO>>  {
+public class CategoryNewsResponseHandler extends BaseResponseHandler implements ResponseHandler<List<CategoryNewsAO>>{
 	
-	private final static Logger logger = Logger.getLogger(CountriesResponseHandler.class);
-	
-	public CountriesResponseHandler(String jsonArguments) {
+	private final static Logger logger = Logger.getLogger(CategoriesResponseHandler.class);
+
+	public CategoryNewsResponseHandler(String jsonArguments) {
 		super(jsonArguments);
 	}
 	
-	public CountriesResponseHandler() {
+	public CategoryNewsResponseHandler() {
 		super();
 	}
 
 	@Override
-	public List<CountryAO> handleResponse(final HttpResponse response) throws IOException {
+	public List<CategoryNewsAO> handleResponse(final HttpResponse response) throws IOException {
 		logger.debug("Mapping response content from httpResponse.");
 		
 		StatusLine statusLine = response.getStatusLine();
@@ -54,12 +54,13 @@ public class CountriesResponseHandler extends BaseResponseHandler implements Res
 
 		JsonParser parser = new JsonParser();
 		JsonObject object = (JsonObject) parser.parse(reader);
-		JsonArray countries = object.getAsJsonArray(getCustomDataName());
+		JsonArray categories = object.getAsJsonArray(getCustomDataName());
 
-		Type contriesAoType = new TypeToken<List<CountryAO>>() {}.getType();
-		List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
+		Type contriesAoType = new TypeToken<List<CategoryNewsAO>>() {}.getType();
+		List<CategoryNewsAO> parsedList = gson.fromJson(categories, contriesAoType);
 
-		logger.debug(String.format("Received %d number of countires records.s", parsedList.size()));
+		logger.debug(String.format("Received %d number of category newsrecords.", parsedList.size()));
 		return parsedList;
 	}
+	
 }

@@ -26,4 +26,8 @@ public class CategoryNewsAO extends APIResponseObject {
 		return null;
 	}
 	
+	@Override
+	public String toString() {
+		return "CategoryNewsAO [title=" + title + ", url=" + url + "]";
+	}	
 }
