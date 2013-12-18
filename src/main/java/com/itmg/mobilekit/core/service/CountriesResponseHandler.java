@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.service;
+package com.itmg.mobilekit.core.service;
 
 import java.io.IOException;
 import java.io.Reader;

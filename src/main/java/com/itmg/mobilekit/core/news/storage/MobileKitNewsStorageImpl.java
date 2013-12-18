@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.news.storage;
+package com.itmg.mobilekit.core.news.storage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
-import com.itmg.mobilekit.exception.MobileKitNewsStorageException;
+import com.itmg.mobilekit.core.exception.MobileKitNewsStorageException;
 
 public class MobileKitNewsStorageImpl implements MobileKitNewsStorage {
 	

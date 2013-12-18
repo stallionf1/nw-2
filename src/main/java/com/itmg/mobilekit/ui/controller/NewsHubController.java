@@ -20,8 +20,8 @@ import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
-import com.itmg.mobilekit.exception.MobileKitServiceException;
-import com.itmg.mobilekit.service.MobileKitAPIService;
+import com.itmg.mobilekit.core.exception.MobileKitServiceException;
+import com.itmg.mobilekit.core.service.MobileKitAPIService;
 
 @Controller
 @RequestMapping("/news")

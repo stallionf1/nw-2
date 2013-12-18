@@ -1,11 +1,11 @@
-package com.itmg.mobilekit.common;
+package com.itmg.mobilekit.core.common;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
-import com.itmg.mobilekit.storage.NewsHubContentStorage;
+import com.itmg.mobilekit.core.storage.NewsHubContentStorage;
 
 public class NewsUpdaterImpl implements NewsUpdater {
 	

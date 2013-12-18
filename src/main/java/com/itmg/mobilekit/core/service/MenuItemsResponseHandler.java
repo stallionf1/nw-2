@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.service;
+package com.itmg.mobilekit.core.service;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -18,20 +18,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.itmg.mobilekit.api.response.NewsContentAO;
+import com.itmg.mobilekit.api.response.MenuItemAO;
 
-public class NewsResponseHandler extends BaseResponseHandler implements ResponseHandler<List<NewsContentAO>>{
+public class MenuItemsResponseHandler extends BaseResponseHandler implements ResponseHandler<List<MenuItemAO>> {
 
-	public NewsResponseHandler(String jsonArguments) {
-		super(jsonArguments);
+	public MenuItemsResponseHandler(String jsonArgument) {
+		super(jsonArgument);
 	}
 	
-	public NewsResponseHandler() {
-		super();
+	public MenuItemsResponseHandler() {
+		
 	}
 	
-	  @Override
-	    public  List<NewsContentAO> handleResponse(final HttpResponse response) throws IOException {
+	 @Override
+	    public  List<MenuItemAO> handleResponse(final HttpResponse response) throws IOException {
 	        StatusLine statusLine = response.getStatusLine();
 	        HttpEntity entity = response.getEntity();
 	        if (statusLine.getStatusCode() >= 300) {
@@ -47,10 +47,12 @@ public class NewsResponseHandler extends BaseResponseHandler implements Response
 			JsonObject object = (JsonObject) parser.parse(reader);
 	        JsonArray countries = object.getAsJsonArray(getCustomDataName());
 			
-			Type contriesAoType = new TypeToken<List<NewsContentAO>>(){}.getType();
-			List<NewsContentAO> parsedList = gson.fromJson(countries, contriesAoType);
+			Type contriesAoType = new TypeToken<List<MenuItemAO>>(){}.getType();
+			List<MenuItemAO> parsedList = gson.fromJson(countries, contriesAoType);
 			
 			return parsedList;
 	        
-	    }	
+	    }
+
+	
 }

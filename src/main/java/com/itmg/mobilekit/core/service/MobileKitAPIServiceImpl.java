@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.service;
+package com.itmg.mobilekit.core.service;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,8 +36,8 @@ import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
-import com.itmg.mobilekit.common.Constants;
-import com.itmg.mobilekit.exception.MobileKitServiceException;
+import com.itmg.mobilekit.core.common.Constants;
+import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 
 public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 

@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.storage;
+package com.itmg.mobilekit.core.storage;
 
 import java.util.List;
 

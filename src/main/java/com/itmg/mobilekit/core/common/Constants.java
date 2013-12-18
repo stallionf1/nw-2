@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.common;
+package com.itmg.mobilekit.core.common;
 
 import java.util.Arrays;
 import java.util.List;

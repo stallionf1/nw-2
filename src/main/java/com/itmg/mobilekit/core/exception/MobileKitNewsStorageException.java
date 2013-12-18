@@ -1,4 +1,4 @@
-package com.itmg.mobilekit.exception;
+package com.itmg.mobilekit.core.exception;
 
 public class MobileKitNewsStorageException extends Exception {
 	

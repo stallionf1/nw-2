@@ -2,8 +2,8 @@ package com.itmg.mobilekit.ui.context;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.itmg.mobilekit.common.NewsUpdater;
-import com.itmg.mobilekit.common.NewsUpdaterImpl;
+import com.itmg.mobilekit.core.common.NewsUpdater;
+import com.itmg.mobilekit.core.common.NewsUpdaterImpl;
 
 
 public class MobileKitServletContextListener implements ServletContextListener  {
