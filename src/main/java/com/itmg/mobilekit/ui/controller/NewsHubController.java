@@ -48,7 +48,7 @@ public class NewsHubController {
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+			
 	//Test executions...
 	@RequestMapping("/countries")
 	public ResponseEntity<String> listAllCountries(HttpServletRequest req, HttpServletResponse response) {
