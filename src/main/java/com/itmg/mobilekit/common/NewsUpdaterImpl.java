@@ -5,7 +5,12 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
+import com.itmg.mobilekit.storage.NewsHubContentStorage;
+
 public class NewsUpdaterImpl implements NewsUpdater {
+	
+	//TODO: init with spring.
+	private NewsHubContentStorage newsHubContentStorage;
 	
 	private static final Logger logger = Logger.getLogger(NewsUpdaterImpl.class);
 	
@@ -27,5 +32,6 @@ public class NewsUpdaterImpl implements NewsUpdater {
 	private void updateNewsContent() {
 		logger.info("Start updating news conent.");
 		//System.out.println("--- start updating news content ---- ");
+		//newsHubContentStorage.updateNewsHubContent();
 	}
 }

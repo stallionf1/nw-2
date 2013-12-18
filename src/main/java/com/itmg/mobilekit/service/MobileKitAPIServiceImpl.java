@@ -33,7 +33,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.itmg.mobilekit.api.APITypes;
-import com.itmg.mobilekit.api.response.APIResponseObject;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
@@ -45,15 +44,38 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	private final static Logger logger = Logger.getLogger(MobileKitAPIServiceImpl.class);
 	
 	@Override
-	public List<CountryAO> listAllCountries() throws MobileKitServiceException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<CountryAO> listAllCountries() throws MobileKitServiceException, ClientProtocolException, IOException {
+	
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getCountriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851");
+
+		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler());
+		httpclient.close();
+		
+		return myjson;
+	}
+	
+	@Override
+	public List<MenuItemAO> listMenuItems() throws MobileKitServiceException, ClientProtocolException, IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getMenuItems?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode=UA");
+
+		List<MenuItemAO> myjson = httpclient.execute(httpget, new MenuItemsResponseHandler());
+		
+		httpclient.close();
+		
+		return myjson;
 	}
 
 	@Override
-	public List<NewsContentAO> listMainNews(String countryCode, String pageID,
-			String fullContent) {
-		// TODO Auto-generated method stub
+	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) {
+//		CloseableHttpClient httpclient = HttpClients.createDefault();
+//		String link = String.format("%s", Constants.NEWS_HUB_API_URL,)
+//		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getCountriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851");
+//
+//		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler());
+//		httpclient.close();
+
 		return null;
 	}
 
@@ -150,21 +172,16 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		switch (requestedAPI) {
 			case GET_COUNTRIES: {
 				JsonArray countries = object.getAsJsonArray("countries");
-			
-				Type contriesAoType = new TypeToken<List<CountryAO>>(){}.getType();
+			    Type contriesAoType = new TypeToken<List<CountryAO>>(){}.getType();
 				List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
-				
 				return parsedList;
 			}
 			
 			case GET_MENU_ITEMS: {
-				JsonArray countries = object.getAsJsonArray("menu_items");
-				
+				JsonArray countries = object.getAsJsonArray("menu_items");				
 				Type aoType = new TypeToken<List<MenuItemAO>>(){}.getType();
-				List<MenuItemAO> parsedList = gson.fromJson(countries, aoType);
-				
-				logger.debug("Received MenuItems list:"+parsedList);
-				
+				List<MenuItemAO> parsedList = gson.fromJson(countries, aoType);				
+				logger.debug("Received MenuItems list:"+parsedList);				
 				return parsedList;
 			}
 

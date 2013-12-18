@@ -1,18 +1,24 @@
 package com.itmg.mobilekit.ui.controller;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itmg.mobilekit.api.APITypes;
+import com.itmg.mobilekit.api.response.CountryAO;
+import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.exception.MobileKitServiceException;
 import com.itmg.mobilekit.service.MobileKitAPIService;
 
@@ -45,13 +51,46 @@ public class NewsHubController {
 	public ResponseEntity<String> listAllCountries(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			service.listAllCountries();
+			List<CountryAO> list = service.listAllCountries();	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
 		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return new ResponseEntity<String>("countries_list_called", HttpStatus.OK);
+	}
+	
+	@RequestMapping("/menu_items")
+	public ResponseEntity<String> listMenuItems(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			List<MenuItemAO> list = service.listMenuItems();	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("menu_items_called", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/slider_news")

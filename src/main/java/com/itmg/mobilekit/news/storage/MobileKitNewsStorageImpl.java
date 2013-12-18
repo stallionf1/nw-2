@@ -25,15 +25,13 @@ public class MobileKitNewsStorageImpl implements MobileKitNewsStorage {
 	}
 
 	@Override
-	public List<MenuItemAO> loadMenuItemsListAO()
-			throws MobileKitNewsStorageException {
+	public List<MenuItemAO> loadMenuItemsListAO() throws MobileKitNewsStorageException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<CountryAO> loadCountriesListAO()
-			throws MobileKitNewsStorageException {
+	public List<CountryAO> loadCountriesListAO() throws MobileKitNewsStorageException {
 		// TODO Auto-generated method stub
 		return null;
 	}
