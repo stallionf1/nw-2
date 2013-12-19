@@ -39,7 +39,7 @@ public class NewsHubController {
 		logger.debug("Executing <handleMainPageContent> method.");
 		
 		try {
-			Map<APITypes, Object> mainPageContent = service.loadHomePageContent();
+			Map<APITypes, Object> mainPageContent = service.loadHomePageContent(req.getRemoteAddr());
 			logger.debug("Parsed content is" + mainPageContent);
 			return new ResponseEntity<String>(mainPageContent.keySet().toString(), HttpStatus.OK);
 			
@@ -77,7 +77,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listMenuItems(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<MenuItemAO> list = service.listMenuItems("UA");	
+			List<MenuItemAO> list = service.listMenuItems("UA", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -100,7 +100,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listSliderNews(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<NewsContentAO> list = service.listSliderNews("RU");	
+			List<NewsContentAO> list = service.listSliderNews("RU", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -123,7 +123,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listMainNews(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<NewsContentAO> list = service.listMainNews("UA", "p1", "NO");	
+			List<NewsContentAO> list = service.listMainNews("UA", "p1", "NO", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -147,7 +147,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listCategories(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<CategoryAO> list = service.loadCategoriesByCountry("UA");	
+			List<CategoryAO> list = service.loadCategoriesByCountry("UA", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -170,7 +170,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listCategoryNews(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<CategoryNewsAO> list = service.loadCategoryNewsByCategoryAndCountry("world", "UA");	
+			List<CategoryNewsAO> list = service.loadCategoryNewsByCategoryAndCountry("world", "UA", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -193,7 +193,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listMenuNews(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<NewsContentAO> list = service.loadNewsByMenuSectionAndCountry("world", "UA");	
+			List<NewsContentAO> list = service.loadNewsByMenuSectionAndCountry("world", "UA", req.getRemoteAddr(), "p1", "YES");	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -216,7 +216,7 @@ public class NewsHubController {
 	public ResponseEntity<String> listNewsDetails(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			NewsContentAO newsData = service.loadNewsDetails("16411", "UA");	
+			NewsContentAO newsData = service.loadNewsDetails("16411", "UA", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(newsData.toString(), h, HttpStatus.OK);

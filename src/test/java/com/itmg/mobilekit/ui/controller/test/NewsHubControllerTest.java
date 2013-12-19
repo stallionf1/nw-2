@@ -14,7 +14,7 @@ public class NewsHubControllerTest {
 		MobileKitAPIService service = new MobileKitAPIServiceImpl();
 		
 		try {
-			service.loadHomePageContent();
+			service.loadHomePageContent("dd");
 		} catch (MobileKitServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

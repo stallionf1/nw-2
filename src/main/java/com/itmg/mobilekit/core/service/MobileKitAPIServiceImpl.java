@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -37,6 +36,7 @@ import com.itmg.mobilekit.api.response.CategoryNewsAO;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
+import com.itmg.mobilekit.core.common.Config;
 import com.itmg.mobilekit.core.common.Constants;
 import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 
@@ -48,28 +48,21 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	public List<CountryAO> listAllCountries(String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 	
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getCountriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851");
 
-		httpget.addHeader("x-forwarded-for", remoteIp);
+		HeaderHttpGet get = new HeaderHttpGet(getCountriesListUrl(), remoteIp);
 		
-		System.out.println("httpGet data length:" + httpget.getAllHeaders().length);
-		
-		for (Header head : httpget.getAllHeaders()) {
-			System.out.println("Header name=" + head.getName() + "value="+head.getValue());
-		}
-		
-		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler("countries"));
+		List<CountryAO> myjson = httpclient.execute(get, new CountriesResponseHandler("countries"));
 		httpclient.close();
 		
 		return myjson;
 	}
 	
 	@Override
-	public List<MenuItemAO> listMenuItems(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<MenuItemAO> listMenuItems(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getMenuItems?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode="+countryCode);
-
-		List<MenuItemAO> myjson = httpclient.execute(httpget, new MenuItemsResponseHandler("menu_items"));
+	
+		HeaderHttpGet get = new HeaderHttpGet(getMenuItemsUrl(countryCode), remoteIp);
+		List<MenuItemAO> myjson = httpclient.execute(get, new MenuItemsResponseHandler("menu_items"));
 		
 		httpclient.close();
 		
@@ -77,26 +70,23 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	@Override
-	public List<NewsContentAO> listSliderNews(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<NewsContentAO> listSliderNews(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getSliderNews?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode="+countryCode);
-
-		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("slider_news"));
+		
+		HeaderHttpGet get = new HeaderHttpGet(getSliderNewsUrl(countryCode), remoteIp);
+		List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("slider_news"));
 		
 		httpclient.close();
 		
 		return myjson;
-		
 	}
 
 	@Override
-	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
-		String url = String.format("%s%s?%s&countryCode=UA&fullContent=YES", Constants.NEWS_HUB_API_URL, Constants.MAIN_NEWS_API, Constants.NEWS_HUB_TOKEN);
-		
-		HttpGet httpget = new HttpGet(url);
-		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("main_news"));
+
+		HeaderHttpGet get = new HeaderHttpGet(getMainNewsUrl(countryCode, pageID, fullContent), remoteIp);
+		List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("main_news"));
 		
 		httpclient.close();
 		
@@ -105,17 +95,17 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
 	@Deprecated
 	@Override
-	public List<NewsContentAO> getDetailedNewsContent(String newsID)throws MobileKitServiceException {
+	public List<NewsContentAO> getDetailedNewsContent(String newsID, String remoteIp)throws MobileKitServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public List<CategoryAO> loadCategoriesByCountry(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<CategoryAO> loadCategoriesByCountry(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getReferencedCategoriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851&countryCode="+countryCode);
-
-		List<CategoryAO> myjson = httpclient.execute(httpget, new CategoriesResponseHandler("categories"));
+		
+		HeaderHttpGet get = new HeaderHttpGet(getCategoriesByCountryUrl(countryCode), remoteIp);
+		List<CategoryAO> myjson = httpclient.execute(get, new CategoriesResponseHandler("categories"));
 		
 		httpclient.close();
 		
@@ -123,31 +113,24 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	@Override
-	public List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getReferencedNewsByCategory?accessToken=ec5e7622a39ba5a09e87fabcce102851"
-				+ "&countryCode="+countryCode
-				+ "&categoryName="+category);
 
-		List<CategoryNewsAO> myjson = httpclient.execute(httpget, new CategoryNewsResponseHandler("news_links"));
-		
+		HeaderHttpGet get = new HeaderHttpGet(getCategoryNewsUrl(countryCode, category), remoteIp);
+		List<CategoryNewsAO> myjson = httpclient.execute(get, new CategoryNewsResponseHandler("news_links"));
 		httpclient.close();
 		
 		return myjson;
 	}
 	
 	@Override
-	public List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode) throws MobileKitServiceException, 
+	public List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode, String remoteIp, String pageId, String fullContent) throws MobileKitServiceException, 
 																											  ClientProtocolException,
 																											  IOException {
-		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
-		String url = String.format("%s%s?%s&countryCode=UA&fullContent=NO&menuItem=%s&pageId=p1", Constants.NEWS_HUB_API_URL, Constants.MENU_NEWS_API, Constants.NEWS_HUB_TOKEN, menuSection);
-		
-		HttpGet httpget = new HttpGet(url);
-		List<NewsContentAO> myjson = httpclient.execute(httpget, new NewsResponseHandler("menu_news"));
-		
+ 
+		HeaderHttpGet get = new HeaderHttpGet(getMenuNewsUrl(menuSection, countryCode, fullContent, pageId), remoteIp);
+		List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("menu_news"));
 		httpclient.close();
 		
 		return myjson;
@@ -155,21 +138,18 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	@Override
-	public NewsContentAO loadNewsDetails(String newsID, String countryCode) throws MobileKitServiceException, ClientProtocolException,
+	public NewsContentAO loadNewsDetails(String newsID, String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException,
 			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		
-		String url = String.format("%s%s?%s&newsID=%s", Constants.NEWS_HUB_API_URL, Constants.NEWS_DETAILS_API, 
-									Constants.NEWS_HUB_TOKEN, newsID);
-		
-		HttpGet httpget = new HttpGet(url);
-		NewsContentAO myjson = httpclient.execute(httpget, new NewsDetailsResponseHandler());
+		HeaderHttpGet get = new HeaderHttpGet(getDetailedNewsContentUrl(newsID), remoteIp);
+		NewsContentAO myjson = httpclient.execute(get, new NewsDetailsResponseHandler());
 		httpclient.close();
 		return myjson;
 	}
 
 	@Override
-	public  Map<APITypes, Object> loadHomePageContent() throws MobileKitServiceException {
+	public  Map<APITypes, Object> loadHomePageContent(String remoteIp) throws MobileKitServiceException {
 		logger.debug("Start loading content for main page.");
 		
 		final Map<APITypes, Object> responsesDataMap = new HashMap<APITypes, Object>();
@@ -344,5 +324,66 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		else if (uri.contains(Constants.REFERENCED_ITEMS_API_NAME))  return APITypes.GET_REFERENSED_ITEMS;
 		
 		return APITypes.NOT_SPECIFIED;
-	}	
+	}
+	
+	private String getCountriesListUrl() {
+		String url = String.format("%s%s%s%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getCountriesList?",
+				Config.getInstance().getToken());
+		return url;
+	}
+	
+	private String getMenuItemsUrl(String countryCode) {
+		String url = String.format("%s%s%s%s&countryCode=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getMenuItems?", Config.getInstance().getToken(), countryCode);
+		return url;
+	}
+	
+	private String getSliderNewsUrl(String countryCode) {
+		String url = String.format("%s%s%s%s&countryCode=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getSliderNews?", Config.getInstance().getToken(), countryCode);
+		return url;
+	}
+	
+	private String getMainNewsUrl(String countryCode, String pageID, String fullContent) {	
+		String url = String.format("%s%s%s%s&countryCode=%s&pageId=%s&fullContent=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getMainPageNews?", Config.getInstance().getToken(), countryCode, fullContent, pageID);		
+		return url;
+	}
+	
+	private String getCategoriesByCountryUrl(String countryCode) {		
+		String url = String.format("%s%s%s%s&countryCode=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getReferencedCategoriesList?", Config.getInstance().getToken(), countryCode);
+		return url;
+	}
+	
+	private String getCategoryNewsUrl(String countryCode, String categoryName) {
+		String url = String.format("%s%s%s%s&countryCode=%s&categoryName=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getReferencedNewsByCategory?", Config.getInstance().getToken(), countryCode, categoryName);
+		return url;
+	}
+	
+	private String getMenuNewsUrl(String menuName, String countryCode, String fullContent, String pageId) {
+		String url = String.format("%s%s%s%s&countryCode=%s&fullContent=%s&menuItem=%s&pageId=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/listNewsByMenuItem?", Config.getInstance().getToken(), countryCode, fullContent, menuName, pageId);
+		return url;
+	}
+	
+	private String getDetailedNewsContentUrl(String newsId) {
+		String url = String.format("%s%s%s%s&newsID=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getDetailedNewsContent?", Config.getInstance().getToken(), newsId);
+		return url;
+	}
+}
+
+final class HeaderHttpGet extends HttpGet {
+	
+	public HeaderHttpGet(String url, String ipToAdd) {
+		super(url);
+		addClientsIp(ipToAdd);
+	}
+	
+	private void addClientsIp (String ipToAdd) {
+		super.addHeader(Config.getInstance().getForwardHeader(), ipToAdd);
+	}
 }

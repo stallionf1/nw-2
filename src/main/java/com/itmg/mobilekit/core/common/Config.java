@@ -14,12 +14,13 @@ public class Config {
 	@Configure private String host;
 	@Configure private String api_suffix;
 	@Configure private String token;
+	@Configure private String forwardHeader;
+	
 	
 	private Config() {
 		try {
 			ConfigurationManager.INSTANCE.configure(this);
 		} catch (IllegalArgumentException ex) {
-			System.out.println("pzdc....");
 			logger.fatal("Failed to read configuration file!", ex);
 		}
 	}
@@ -45,13 +46,19 @@ public class Config {
 	}
 	public void setToken(String token) {
 		this.token = token;
+	}	
+	public String getForwardHeader() {
+		return forwardHeader;
 	}
-	
-	
+	public void setForwardHeader(String forwardHeader) {
+		this.forwardHeader = forwardHeader;
+	}
+
 	public static void main(String[] args) {
 		System.out.println("host="+Config.getInstance().getHost());
 		System.out.println("api_suffix="+Config.getInstance().getApi_suffix());
 		System.out.println("token="+Config.getInstance().getToken());
+		System.out.println("Header="+Config.getInstance().getForwardHeader());
 	}
 	
 }

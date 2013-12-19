@@ -17,26 +17,51 @@ import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 public interface MobileKitAPIService {
 	
 	
+	/** 
+	 * @name:
+	 * @param:
+	 * @return: 
+	 * */
 	List<CountryAO> listAllCountries(String remoteIp) throws  MobileKitServiceException, ClientProtocolException, IOException;
 	
-	List<MenuItemAO> listMenuItems(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException;
+	/** 
+	 * @name:
+	 * @param:
+	 * @return: 
+	 * */
+	List<MenuItemAO> listMenuItems(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException;
 	
-	List<NewsContentAO> listSliderNews(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException;
+	/** 
+	 * @name:
+	 * @param:
+	 * @return: 
+	 * */
+	List<NewsContentAO> listSliderNews(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException;
 	
-	List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent) throws MobileKitServiceException, ClientProtocolException, IOException;
+	/** 
+	 * @name:
+	 * @param:
+	 * @return: 
+	 * */
+	List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException;
 	
-	List<NewsContentAO> getDetailedNewsContent(String newsID) throws MobileKitServiceException;
+	/** 
+	 * @name:
+	 * @param:
+	 * @return: 
+	 * */
+	List<NewsContentAO> getDetailedNewsContent(String newsID, String remoteIp) throws MobileKitServiceException;
 	
-	Map<APITypes, Object> loadHomePageContent() throws MobileKitServiceException;
+	Map<APITypes, Object> loadHomePageContent(String remoteIp) throws MobileKitServiceException;
 	
+	List<CategoryAO> loadCategoriesByCountry(String countryCode, String remoteIp) throws  MobileKitServiceException, ClientProtocolException, IOException;
 	
-	List<CategoryAO> loadCategoriesByCountry(String countryCode) throws  MobileKitServiceException, ClientProtocolException, IOException;
-	List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode) throws  MobileKitServiceException, ClientProtocolException, IOException;
+	List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode, String remoteIp) throws  MobileKitServiceException, ClientProtocolException, IOException;
 
-	List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode) throws  MobileKitServiceException, 
-																										ClientProtocolException, 
-																										IOException;
-	NewsContentAO loadNewsDetails(String newsID, String countryCode) throws  MobileKitServiceException, ClientProtocolException, IOException;
-
+	List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode, String remoteIp, String pageId, String fullContent) throws MobileKitServiceException, 
+																											  ClientProtocolException,
+																											  IOException;
+	
+	NewsContentAO loadNewsDetails(String newsID, String countryCode, String remoteIp) throws  MobileKitServiceException, ClientProtocolException, IOException;
 
 }
