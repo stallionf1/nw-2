@@ -1,13 +1,11 @@
 package com.itmg.mobilekit.ui.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -60,17 +58,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("countries_list_called_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("countries_list_called", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/menu_items")
@@ -83,17 +72,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("menu_items_called_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("menu_items_called", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/slider_news")
@@ -106,17 +86,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return new ResponseEntity<String>("slider_news_items_called", HttpStatus.OK);
+			return new ResponseEntity<String>("slider_news_items_called_ERROR", HttpStatus.OK);
+		} 
 	}
 	
 	@RequestMapping("/main_news")
@@ -129,17 +100,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("failed_to_load_main_news_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("failed_to_load_main_news", HttpStatus.OK);
 	}
 	
 
@@ -153,17 +115,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("failed_to_load_categories_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("failed_to_load_categories", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/category_news")
@@ -176,17 +129,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("failed_to_load_category_news_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("failed_to_load_category_news", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/menu_news")
@@ -199,17 +143,8 @@ public class NewsHubController {
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("failed_to_load_menu_news_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("failed_to_load_menu_news", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/news_details")
@@ -222,16 +157,7 @@ public class NewsHubController {
 			return new ResponseEntity<String>(newsData.toString(), h, HttpStatus.OK);
 			
 		} catch (MobileKitServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<String>("failed_to_load_news_details_ERROR", HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<String>("failed_to_load_news_details", HttpStatus.OK);
 	}
 }

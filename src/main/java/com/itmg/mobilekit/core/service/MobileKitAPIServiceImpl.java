@@ -45,52 +45,91 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	private final static Logger logger = Logger.getLogger(MobileKitAPIServiceImpl.class);
 	
 	@Override
-	public List<CountryAO> listAllCountries(String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<CountryAO> listAllCountries(String remoteIp) throws MobileKitServiceException {
 	
+		logger.debug("Start loading countirs list.");
+		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-
-		HeaderHttpGet get = new HeaderHttpGet(getCountriesListUrl(), remoteIp);
+		HeaderHttpGet get = new HeaderHttpGet(getCountriesListUrl(), remoteIp);		
 		
-		List<CountryAO> myjson = httpclient.execute(get, new CountriesResponseHandler("countries"));
-		httpclient.close();
-		
-		return myjson;
+		try {
+			List<CountryAO> myjson = httpclient.execute(get, new CountriesResponseHandler("countries"));		
+			httpclient.close();
+			logger.debug(String.format("Finished loading countries with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize http request", e);
+			throw new MobileKitServiceException("Failed to initialize http request.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}
 	}
 	
 	@Override
-	public List<MenuItemAO> listMenuItems(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-	
+	public List<MenuItemAO> listMenuItems(String countryCode, String remoteIp) throws MobileKitServiceException {
+		logger.debug("Start loading menu items.");
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();	
 		HeaderHttpGet get = new HeaderHttpGet(getMenuItemsUrl(countryCode), remoteIp);
-		List<MenuItemAO> myjson = httpclient.execute(get, new MenuItemsResponseHandler("menu_items"));
 		
-		httpclient.close();
-		
-		return myjson;
+		try {
+			List<MenuItemAO> myjson = httpclient.execute(get, new MenuItemsResponseHandler("menu_items"));
+			httpclient.close();
+			logger.debug(String.format("Finished loading menu items with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize http request", e);
+			throw new MobileKitServiceException("Failed to initialize http request.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}	
 	}
 	
 	@Override
-	public List<NewsContentAO> listSliderNews(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public List<NewsContentAO> listSliderNews(String countryCode, String remoteIp) throws MobileKitServiceException {
+		logger.debug("Start loading SliderNews.");
 		
+		CloseableHttpClient httpclient = HttpClients.createDefault();		
 		HeaderHttpGet get = new HeaderHttpGet(getSliderNewsUrl(countryCode), remoteIp);
-		List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("slider_news"));
-		
-		httpclient.close();
-		
-		return myjson;
+	
+		try {
+			List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("slider_news"));
+			httpclient.close();
+			logger.debug(String.format("Finished loading slider news with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}	
 	}
 
 	@Override
-	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent, String remoteIp) throws MobileKitServiceException {
+		logger.debug("Start loading MainNews.");
+		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-
 		HeaderHttpGet get = new HeaderHttpGet(getMainNewsUrl(countryCode, pageID, fullContent), remoteIp);
-		List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("main_news"));
 		
-		httpclient.close();
-		
-		return myjson;	
+		try {
+			List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("main_news"));
+			httpclient.close();
+			logger.debug(String.format("Finished loading main news with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			return myjson;	
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}	
 	}
 
 	@Deprecated
@@ -101,51 +140,88 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	@Override
-	public List<CategoryAO> loadCategoriesByCountry(String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<CategoryAO> loadCategoriesByCountry(String countryCode, String remoteIp) throws MobileKitServiceException {
+	
+		logger.debug("Start loading Categories.");
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
 		HeaderHttpGet get = new HeaderHttpGet(getCategoriesByCountryUrl(countryCode), remoteIp);
-		List<CategoryAO> myjson = httpclient.execute(get, new CategoriesResponseHandler("categories"));
 		
-		httpclient.close();
-		
-		return myjson;
+		try {
+			List<CategoryAO> myjson = httpclient.execute(get, new CategoriesResponseHandler("categories"));
+			httpclient.close();	
+			logger.debug(String.format("Finished loading Categories with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}
 	}
 	
 	@Override
-	public List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<CategoryNewsAO> loadCategoryNewsByCategoryAndCountry(String category, String countryCode, String remoteIp) throws MobileKitServiceException {
+		
+		logger.debug("Start loading News for Category");
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-
 		HeaderHttpGet get = new HeaderHttpGet(getCategoryNewsUrl(countryCode, category), remoteIp);
-		List<CategoryNewsAO> myjson = httpclient.execute(get, new CategoryNewsResponseHandler("news_links"));
-		httpclient.close();
 		
-		return myjson;
+		try {
+			List<CategoryNewsAO> myjson = httpclient.execute(get, new CategoryNewsResponseHandler("news_links"));
+			httpclient.close();
+			logger.debug(String.format("Finished loading Categories with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}		
 	}
 	
 	@Override
-	public List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode, String remoteIp, String pageId, String fullContent) throws MobileKitServiceException, 
-																											  ClientProtocolException,
-																											  IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
- 
+	public List<NewsContentAO> loadNewsByMenuSectionAndCountry(String menuSection, String countryCode, String remoteIp, String pageId, String fullContent)
+			throws MobileKitServiceException {
+		
+		logger.debug("Start loading Menu News.");
+		CloseableHttpClient httpclient = HttpClients.createDefault(); 
 		HeaderHttpGet get = new HeaderHttpGet(getMenuNewsUrl(menuSection, countryCode, fullContent, pageId), remoteIp);
-		List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("menu_news"));
-		httpclient.close();
-		
-		return myjson;
-	
+				
+		try {
+			List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("menu_news"));
+			httpclient.close();
+			logger.debug(String.format("Finished loading Menu News with number of records: %d", (myjson != null ? myjson.size() : 0)));
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}
 	}
 	
 	@Override
-	public NewsContentAO loadNewsDetails(String newsID, String countryCode, String remoteIp) throws MobileKitServiceException, ClientProtocolException,
-			IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public NewsContentAO loadNewsDetails(String newsID, String countryCode, String remoteIp) throws MobileKitServiceException {
+		logger.debug("Start loading Detailed content for news.");
 		
+		CloseableHttpClient httpclient = HttpClients.createDefault();		
 		HeaderHttpGet get = new HeaderHttpGet(getDetailedNewsContentUrl(newsID), remoteIp);
-		NewsContentAO myjson = httpclient.execute(get, new NewsDetailsResponseHandler());
-		httpclient.close();
-		return myjson;
+		
+		try {
+			NewsContentAO myjson = httpclient.execute(get, new NewsDetailsResponseHandler());
+			httpclient.close();
+			logger.debug("Finished loading DetailedNewsContent.");
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}
 	}
 
 	@Override
@@ -278,8 +354,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		return null;
 
 	}
-	 
-	
+		
 	private Reader initReaderFromResponse(HttpResponse response) throws IllegalStateException, IOException {
 		HttpEntity entity = response.getEntity();
 
@@ -289,8 +364,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
 		return reader;
 	}
-	
-	
+		
 	private List<HttpGet> getMainPageDataRequestsList() {
 
 		String countries_URL = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
@@ -326,6 +400,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		return APITypes.NOT_SPECIFIED;
 	}
 	
+	//get url's for API calls.
 	private String getCountriesListUrl() {
 		String url = String.format("%s%s%s%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
 				"/getCountriesList?",
@@ -378,9 +453,12 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
 final class HeaderHttpGet extends HttpGet {
 	
+	private static final Logger logger = Logger.getLogger(HeaderHttpGet.class);
+	
 	public HeaderHttpGet(String url, String ipToAdd) {
 		super(url);
 		addClientsIp(ipToAdd);
+		logger.debug(String.format("Initialized HttpGet with url:%s", url));
 	}
 	
 	private void addClientsIp (String ipToAdd) {
