@@ -11,12 +11,13 @@ public class NewsUpdaterImpl implements NewsUpdater {
 	
 	//TODO: init with spring.
 	private NewsHubContentStorage newsHubContentStorage;
+	private Timer timer;
 	
 	private static final Logger logger = Logger.getLogger(NewsUpdaterImpl.class);
 	
 	@Override
 	public void update() {
-		Timer timer = new Timer();
+		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			
 			@Override
@@ -27,6 +28,13 @@ public class NewsUpdaterImpl implements NewsUpdater {
 			}
 		}, 0, 1000L * 60 * 1);
 		
+	}
+	
+	@Override
+	public void stopUpdating() {
+		if (timer != null) {
+			timer.cancel();
+		}	
 	}
 	
 	private void updateNewsContent() {
