@@ -53,8 +53,8 @@ public class NewsHubController {
 	@RequestMapping("/countries")
 	public ResponseEntity<String> listAllCountries(HttpServletRequest req, HttpServletResponse response) {
 		
-		try {
-			List<CountryAO> list = service.listAllCountries();	
+		try {			
+			List<CountryAO> list = service.listAllCountries(req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);

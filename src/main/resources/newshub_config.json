@@ -1,0 +1,5 @@
+{
+	"host" : "http://newshubtest.org",
+	"api_suffix" : "/api",
+	"token" = "accessToken=kjhdsfkjhadsf"
+}

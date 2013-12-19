@@ -57,6 +57,15 @@
 	</build>
 
 
+	<repositories>
+		<repository>
+			<id>anotheria_repo</id>
+			<name>AnotheriaNexusRepo</name>
+			<url>http://nexus.anotheria.net/nexus/content/groups/public/</url>
+		</repository>
+
+	</repositories>
+
 	<properties>
 
 		<!-- Generic properties -->
@@ -171,6 +180,12 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.anotheria</groupId>
+			<artifactId>configureme</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 
 	</dependencies>

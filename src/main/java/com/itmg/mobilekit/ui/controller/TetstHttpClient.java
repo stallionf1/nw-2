@@ -10,6 +10,7 @@ import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 
+@Deprecated
 public class TetstHttpClient {
 
 	public static void main(final String[] args) throws Exception {

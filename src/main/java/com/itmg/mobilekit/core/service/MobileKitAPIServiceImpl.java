@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -44,11 +45,19 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	private final static Logger logger = Logger.getLogger(MobileKitAPIServiceImpl.class);
 	
 	@Override
-	public List<CountryAO> listAllCountries() throws MobileKitServiceException, ClientProtocolException, IOException {
+	public List<CountryAO> listAllCountries(String remoteIp) throws MobileKitServiceException, ClientProtocolException, IOException {
 	
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet("http://newshubtest.org/api/getCountriesList?accessToken=ec5e7622a39ba5a09e87fabcce102851");
 
+		httpget.addHeader("x-forwarded-for", remoteIp);
+		
+		System.out.println("httpGet data length:" + httpget.getAllHeaders().length);
+		
+		for (Header head : httpget.getAllHeaders()) {
+			System.out.println("Header name=" + head.getName() + "value="+head.getValue());
+		}
+		
 		List<CountryAO> myjson = httpclient.execute(httpget, new CountriesResponseHandler("countries"));
 		httpclient.close();
 		
@@ -172,15 +181,17 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		// 5. Get ReferencedItems
 
 		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(3000).setConnectTimeout(3000).build();
+		
 		CloseableHttpAsyncClient asyncHttpClient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
 	
 		try {
 			asyncHttpClient.start();
 			List<HttpGet> requestsList = getMainPageDataRequestsList();
-
+			
 			final CountDownLatch countLatch = new CountDownLatch(requestsList.size());
 
 			for (final HttpGet apiRequest : requestsList) {
+				
 				asyncHttpClient.execute(apiRequest, new FutureCallback<HttpResponse>() {
 							@Override
 							public void failed(Exception ex) {

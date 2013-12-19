@@ -17,7 +17,7 @@ import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 public interface MobileKitAPIService {
 	
 	
-	List<CountryAO> listAllCountries() throws  MobileKitServiceException, ClientProtocolException, IOException;
+	List<CountryAO> listAllCountries(String remoteIp) throws  MobileKitServiceException, ClientProtocolException, IOException;
 	
 	List<MenuItemAO> listMenuItems(String countryCode) throws MobileKitServiceException, ClientProtocolException, IOException;
 	

@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.itmg.mobilekit.api.response.NewsContentAO;
 
+@Deprecated
 @Controller
 public class SimpleController {
 
