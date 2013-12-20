@@ -1,8 +1,8 @@
 {
-	"host" : "http://newshubtest.org",
-	"api_suffix" : "/api",
-	"token" = "accessToken=ec5e7622a39ba5a09e87fabcce102851",
+	"host"         : "http://newshubtest.org",
+	"api_suffix"   : "/api",
+	"token"        : "accessToken=ec5e7622a39ba5a09e87fabcce102851",
 	"forwardHeader": "x-forwarded-for",
-	"weatherHost" : "http://ua.newshubtest.org",	
-	"weatherAPI" : "/weather/data"
+	"weatherHost"  : "http://ua.newshubtest.org",	
+	"weatherAPI"   : "/weather/data"
 }
