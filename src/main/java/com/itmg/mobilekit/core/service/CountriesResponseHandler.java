@@ -60,6 +60,7 @@ public class CountriesResponseHandler extends BaseResponseHandler implements Res
 		List<CountryAO> parsedList = gson.fromJson(countries, contriesAoType);
 
 		logger.debug(String.format("Received %d number of countires records.s", parsedList.size()));
+		reader.close();
 		return parsedList;
 	}
 }

@@ -25,7 +25,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -231,66 +235,22 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	@Override
 	public WeatherData loadWeatherData(String locationIp) throws MobileKitServiceException {
 		logger.debug(String.format("Start loading weather data for IP=%s", locationIp));
-		WeatherData data = null;
+ 
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HeaderHttpGet get = new HeaderHttpGet("http://ua.newshubtest.org/weather/data", locationIp);
 		
 		try {
-			WeatherData receivedResponse = httpClient.execute(get, new ResponseHandler<WeatherData>() {
-
-				@Override
-				public WeatherData handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					logger.debug("Mapping response content from httpResponse.");
-					
-					StatusLine statusLine = response.getStatusLine();
-					HttpEntity entity = response.getEntity();
-					
-					if (statusLine.getStatusCode() >= 300) {
-						logger.error("Error while gettign response from NesHub. Error code:" + (statusLine.getStatusCode()));
-						throw new HttpResponseException(statusLine.getStatusCode(),statusLine.getReasonPhrase());
-					}
-					if (entity == null) {
-						logger.error("Empty response received.");
-						throw new ClientProtocolException("Response contains no content");
-					}
-					
-					Reader reader = initReaderFromResponse(response);
-
-					System.out.println("received n:"+response.getEntity().getContentType().getName());
-					System.out.println("received v:"+response.getEntity().getContentType().getValue());
-					
-					
-					while (reader.read() != -1) {
-						char c = (char) reader.read();
-			            System.out.print("" + c);
-					}
-			        
-			        reader.close();
-					
-//					Gson gson = new GsonBuilder().create();
-//					Reader reader = initReaderFromResponse(response);
-//
-//					//TODO: this is to much...
-//					JsonParser parser = new JsonParser();
-//					JsonObject object = (JsonObject) parser.parse(reader);
-//					
-//					NewsContentAO detailedNews = gson.fromJson(object, NewsContentAO.class);
-//
-//					logger.debug(String.format("Received %s news details",detailedNews.getNews_id()));
-					return new WeatherData();
-				}
-				
-				
-			});
+			WeatherData data = httpClient.execute(get, new WeatherResponseHandler());
+			httpClient.close();
+			logger.debug(String.format("Received weather data: %s", data));
+			return data;
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to receive Weather data.", e);
+			throw new MobileKitServiceException("Failed to receive Weather data.", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to read weather response.", e);
+			throw new MobileKitServiceException("Failed to read weather response.", e);
 		}
-		
-		return new WeatherData();
 	}
 
 	@Override

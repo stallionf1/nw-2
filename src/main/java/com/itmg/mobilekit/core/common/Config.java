@@ -15,7 +15,8 @@ public class Config {
 	@Configure private String api_suffix;
 	@Configure private String token;
 	@Configure private String forwardHeader;
-	
+	@Configure private String weatherHost; 
+	@Configure private String weatherAPI;
 	
 	private Config() {
 		try {
@@ -52,6 +53,18 @@ public class Config {
 	}
 	public void setForwardHeader(String forwardHeader) {
 		this.forwardHeader = forwardHeader;
+	}
+	public String getWeatherHost() {
+		return weatherHost;
+	}
+	public void setWeatherHost(String weatherHost) {
+		this.weatherHost = weatherHost;
+	}
+	public String getWeatherAPI() {
+		return weatherAPI;
+	}
+	public void setWeatherAPI(String weatherAPI) {
+		this.weatherAPI = weatherAPI;
 	}
 
 	public static void main(String[] args) {

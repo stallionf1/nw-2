@@ -60,6 +60,7 @@ public class CategoryNewsResponseHandler extends BaseResponseHandler implements 
 		List<CategoryNewsAO> parsedList = gson.fromJson(categories, contriesAoType);
 
 		logger.debug(String.format("Received %d number of category newsrecords.", parsedList.size()));
+		reader.close();
 		return parsedList;
 	}
 	

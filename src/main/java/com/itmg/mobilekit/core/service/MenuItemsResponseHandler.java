@@ -50,9 +50,7 @@ public class MenuItemsResponseHandler extends BaseResponseHandler implements Res
 			Type contriesAoType = new TypeToken<List<MenuItemAO>>(){}.getType();
 			List<MenuItemAO> parsedList = gson.fromJson(countries, contriesAoType);
 			
-			return parsedList;
-	        
-	    }
-
-	
+			reader.close();
+			return parsedList;	        
+	    }	
 }

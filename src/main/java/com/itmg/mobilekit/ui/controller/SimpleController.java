@@ -18,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +29,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.itmg.mobilekit.api.response.NewsContentAO;
+import com.itmg.mobilekit.api.response.WeatherData;
+import com.itmg.mobilekit.core.exception.MobileKitServiceException;
+import com.itmg.mobilekit.core.service.MobileKitAPIService;
 
-@Deprecated
 @Controller
 public class SimpleController {
+	
+	@Autowired
+	private MobileKitAPIService service;
 
 	@RequestMapping("/weather")
 	public ModelAndView checkWeather() {
@@ -40,14 +46,20 @@ public class SimpleController {
 	}
 
 	@RequestMapping("/something")
-	public ResponseEntity<String> handle(
-			@RequestParam("entered_ip") String entered_ip, ModelMap modelMap)
-			throws UnsupportedEncodingException {
-
-		String ip = entered_ip;
-		System.out.println("------------- entered ip = " + entered_ip);
-
-		return new ResponseEntity<String>("WeatherView", HttpStatus.OK);
+	public ModelAndView handle(@RequestParam("entered_ip") String entered_ip, ModelMap modelMap) throws UnsupportedEncodingException {
+		try {
+			WeatherData data = service.loadWeatherData(entered_ip);
+		
+			ModelAndView model = new ModelAndView("WeatherView");
+			model.addObject("location", data.getLocation());
+			model.addObject("degree", data.getDegree());
+			model.addObject("imageUrl", data.getImgUrl());			
+			model.addObject("entered_ip", entered_ip);
+			
+			return model;
+		} catch (MobileKitServiceException e) {
+			return new ModelAndView("");
+		}
 	}
 
 	@RequestMapping("/weather_header")

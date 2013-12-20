@@ -11,10 +11,16 @@
 		<title>Welcome</title>
 	</head> 
 	<body>
-		hhhhhh weather response.
-		<br/>
-		<h2>${a1}</h2>
-		<h2>${a2}</h2>
-		<h2>${a3}</h2>
-	</body>
+	<p>Weather for ip: ${entered_ip}</p>
+		<div class="weather-img-block left">
+       		 <img class="weather-img" width="40" height="35" src="${imageUrl}" alt="cloudy_icon"/>
+   		 </div>
+	<div class="weather-info left">
+    	<div class="weather-title clearfix">
+        	<span class="left">${location}</span>
+    	</div>
+    
+        <div class="degree">${degree}</div>
+    </div>
+</body>
 </html>

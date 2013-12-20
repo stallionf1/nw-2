@@ -60,6 +60,7 @@ public class CategoriesResponseHandler extends BaseResponseHandler implements Re
 		List<CategoryAO> parsedList = gson.fromJson(categories, contriesAoType);
 
 		logger.debug(String.format("Received %d number of categories records.", parsedList.size()));
+		reader.close();
 		return parsedList;
 	}
 	
