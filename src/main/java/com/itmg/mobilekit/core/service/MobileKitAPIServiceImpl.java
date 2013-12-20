@@ -238,7 +238,8 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		logger.debug(String.format("Start loading weather data for IP=%s", locationIp));
  
 		CloseableHttpClient httpClient = HttpClients.createDefault();
-		HeaderHttpGet get = new HeaderHttpGet("http://ua.newshubtest.org/weather/data", locationIp);
+		HeaderHttpGet get = new HeaderHttpGet(
+				String.format("%s%s", Config.getInstance().getWeatherHost(), Config.getInstance().getWeatherAPI()), locationIp);
 		
 		try {
 			WeatherData data = httpClient.execute(get, new WeatherResponseHandler());
