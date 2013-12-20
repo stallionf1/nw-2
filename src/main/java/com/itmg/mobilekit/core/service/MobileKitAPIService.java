@@ -12,6 +12,7 @@ import com.itmg.mobilekit.api.response.CategoryNewsAO;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
+import com.itmg.mobilekit.api.response.WeatherData;
 import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 
 public interface MobileKitAPIService {
@@ -62,4 +63,6 @@ public interface MobileKitAPIService {
 	
 	NewsContentAO loadNewsDetails(String newsID, String countryCode, String remoteIp) throws  MobileKitServiceException;
 
+	WeatherData loadWeatherData(String locationIp) throws MobileKitServiceException;
+	
 }

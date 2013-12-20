@@ -13,7 +13,10 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
@@ -36,6 +39,7 @@ import com.itmg.mobilekit.api.response.CategoryNewsAO;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
+import com.itmg.mobilekit.api.response.WeatherData;
 import com.itmg.mobilekit.core.common.Config;
 import com.itmg.mobilekit.core.common.Constants;
 import com.itmg.mobilekit.core.exception.MobileKitServiceException;
@@ -222,6 +226,71 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			logger.error("Failed to read HttpResponse.", e);
 			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
 		}
+	}
+	
+	@Override
+	public WeatherData loadWeatherData(String locationIp) throws MobileKitServiceException {
+		logger.debug(String.format("Start loading weather data for IP=%s", locationIp));
+		WeatherData data = null;
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HeaderHttpGet get = new HeaderHttpGet("http://ua.newshubtest.org/weather/data", locationIp);
+		
+		try {
+			WeatherData receivedResponse = httpClient.execute(get, new ResponseHandler<WeatherData>() {
+
+				@Override
+				public WeatherData handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+					logger.debug("Mapping response content from httpResponse.");
+					
+					StatusLine statusLine = response.getStatusLine();
+					HttpEntity entity = response.getEntity();
+					
+					if (statusLine.getStatusCode() >= 300) {
+						logger.error("Error while gettign response from NesHub. Error code:" + (statusLine.getStatusCode()));
+						throw new HttpResponseException(statusLine.getStatusCode(),statusLine.getReasonPhrase());
+					}
+					if (entity == null) {
+						logger.error("Empty response received.");
+						throw new ClientProtocolException("Response contains no content");
+					}
+					
+					Reader reader = initReaderFromResponse(response);
+
+					System.out.println("received n:"+response.getEntity().getContentType().getName());
+					System.out.println("received v:"+response.getEntity().getContentType().getValue());
+					
+					
+					while (reader.read() != -1) {
+						char c = (char) reader.read();
+			            System.out.print("" + c);
+					}
+			        
+			        reader.close();
+					
+//					Gson gson = new GsonBuilder().create();
+//					Reader reader = initReaderFromResponse(response);
+//
+//					//TODO: this is to much...
+//					JsonParser parser = new JsonParser();
+//					JsonObject object = (JsonObject) parser.parse(reader);
+//					
+//					NewsContentAO detailedNews = gson.fromJson(object, NewsContentAO.class);
+//
+//					logger.debug(String.format("Received %s news details",detailedNews.getNews_id()));
+					return new WeatherData();
+				}
+				
+				
+			});
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new WeatherData();
 	}
 
 	@Override
@@ -458,7 +527,7 @@ final class HeaderHttpGet extends HttpGet {
 	public HeaderHttpGet(String url, String ipToAdd) {
 		super(url);
 		addClientsIp(ipToAdd);
-		logger.debug(String.format("Initialized HttpGet with url:%s", url));
+		logger.debug(String.format("Initialized HttpGet From IP=%s with url:%s ",ipToAdd, url));
 	}
 	
 	private void addClientsIp (String ipToAdd) {

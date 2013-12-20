@@ -20,6 +20,7 @@ import com.itmg.mobilekit.api.response.CategoryNewsAO;
 import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
+import com.itmg.mobilekit.api.response.WeatherData;
 import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 import com.itmg.mobilekit.core.service.MobileKitAPIService;
 
@@ -158,6 +159,20 @@ public class NewsHubController {
 			
 		} catch (MobileKitServiceException e) {
 			return new ResponseEntity<String>("failed_to_load_news_details_ERROR", HttpStatus.OK);
+		}
+	}
+	
+	@RequestMapping("/weather")
+	public ResponseEntity<String> showWeather(HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			WeatherData data = service.loadWeatherData(req.getRemoteAddr());	
+			HttpHeaders h = new HttpHeaders();
+			h.add("Content-type", "text/html;charset=UTF-8");
+			return new ResponseEntity<String>(data.toString(), h, HttpStatus.OK);
+			
+		} catch (MobileKitServiceException e) {
+			return new ResponseEntity<String>("failed_to_load_weather_ERROR", HttpStatus.OK);
 		}
 	}
 }
