@@ -452,8 +452,8 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	private String getMainNewsUrl(String countryCode, String pageID, String fullContent) {	
-		String url = String.format("%s%s%s%s&countryCode=%s&pageId=%s&fullContent=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
-				"/getMainPageNews?", Config.getInstance().getToken(), countryCode, fullContent, pageID);		
+		String url = String.format("%s%s%s%s&countryCode=%s&pageID=%s&fullContent=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getMainPageNews?", Config.getInstance().getToken(), countryCode, pageID, fullContent);		
 		return url;
 	}
 	

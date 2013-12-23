@@ -12,7 +12,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CategoryAO;
@@ -95,7 +100,12 @@ public class NewsHubController {
 	public ResponseEntity<String> listMainNews(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
-			List<NewsContentAO> list = service.listMainNews("UA", "p1", "NO", req.getRemoteAddr());	
+			String page = req.getParameter("page");
+			System.out.println("--- page parameter = " + page);
+			if (page == null) {
+				page = "1";
+			}
+			List<NewsContentAO> list = service.listMainNews("UA", page, "NO", req.getRemoteAddr());	
 			HttpHeaders h = new HttpHeaders();
 			h.add("Content-type", "text/html;charset=UTF-8");
 			return new ResponseEntity<String>(list.toString(), h, HttpStatus.OK);
@@ -175,4 +185,36 @@ public class NewsHubController {
 			return new ResponseEntity<String>("failed_to_load_weather_ERROR", HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping("/index") 
+	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
+		
+		try {
+			List<MenuItemAO> list = service.listMenuItems("UA", req.getRemoteAddr());
+			uiModel.addAttribute("menuItemsList", list);
+			
+			List<CountryAO> countries = service.listAllCountries(req.getRemoteAddr());
+			
+			uiModel.addAttribute("countryItemsList", countries);
+			//No need to add it here, because it has been already added in menuItem();
+			//uiModel.addAttribute("menuItem", new MenuItemAO());
+			
+		} catch (MobileKitServiceException e) {
+			
+			e.printStackTrace();
+		}	
+
+		return "mobile_index";
+	}
+	
+	//Method for all forms.
+	@ModelAttribute("menuItem")
+	public MenuItemAO menuItem() {
+		return new MenuItemAO();
+	}
+	@ModelAttribute("countryItem")
+	public CountryAO countryItem() {
+		return new CountryAO();
+	} 
+		
 }
