@@ -201,10 +201,15 @@ public class NewsHubController {
 			
 		} catch (MobileKitServiceException e) {
 			
-			e.printStackTrace();
+			System.out.println(e);
 		}	
 
 		return "mobile_index";
+	}
+	
+	@RequestMapping("/")
+	public void retrieveUsersCountry(HttpServletRequest req, HttpServletResponse response) {
+		System.out.println("----calling / method to get users locale.");
 	}
 	
 	//Method for all forms.
