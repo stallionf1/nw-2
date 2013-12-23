@@ -210,6 +210,7 @@ public class NewsHubController {
 	@RequestMapping("/")
 	public void retrieveUsersCountry(HttpServletRequest req, HttpServletResponse response) {
 		System.out.println("----calling / method to get users locale.");
+		//test commit from home.
 	}
 	
 	//Method for all forms.
