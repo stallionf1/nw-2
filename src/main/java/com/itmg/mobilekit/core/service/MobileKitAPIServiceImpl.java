@@ -336,10 +336,12 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 
 		logger.debug("Start fetching user's locale.");
 		try {
+			
 			HttpURLConnection con = (HttpURLConnection) (new URL(Config.getInstance().getLocale_host())).openConnection();
 			con.setInstanceFollowRedirects(false);
-			con.connect();		
-			
+			con.addRequestProperty(Config.getInstance().getForwardHeader(), usersIp);
+			con.connect();
+						
 			String code = extractLocaleCode(con.getHeaderField("Location"));
 			logger.debug(String.format("Fetched user's country as: %s for IP:%s", code, usersIp));
 			con.disconnect();
