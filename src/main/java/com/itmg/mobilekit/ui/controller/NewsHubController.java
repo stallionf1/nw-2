@@ -214,6 +214,7 @@ public class NewsHubController {
 		HttpSession session = req.getSession();
 		
 		//test commit from home.
+		//test commit from home.
 	}
 	
 	//Method for all forms.
