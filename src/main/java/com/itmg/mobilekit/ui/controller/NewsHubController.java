@@ -192,8 +192,7 @@ public class NewsHubController {
 	@RequestMapping("/index") 
 	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
 		
-		try {
-			
+		try {			
 			String country = req.getParameter("countryItemParam");
 			String menuItem = req.getParameter("menuItemParam");
 			

@@ -332,8 +332,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	
 	@Override
 	public String fetchUsersLocale(String usersIp) throws MobileKitServiceException {
-
-		logger.debug("Start fetching user's locale.");
+		logger.debug(String.format("Start fetching user's locale for IP:%s", usersIp));
 		try {			
 			HttpURLConnection con = (HttpURLConnection) (new URL(Config.getInstance().getLocale_host())).openConnection();
 			con.setInstanceFollowRedirects(false);
@@ -341,7 +340,9 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			con.connect();
 						
 			String code = extractLocaleCode(con.getHeaderField("Location"));
+			
 			logger.debug(String.format("Fetched user's country as: %s for IP:%s", code, usersIp));
+			
 			con.disconnect();
 			return code;
 		} catch (MalformedURLException e) {
@@ -354,7 +355,13 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 
 	private String extractLocaleCode(String location) {
-		return  location.substring(location.indexOf("//") +2, location.indexOf("."));
+		if (location != null) {
+			logger.debug(String.format("Get Location response header as:", location == null ? "NULL" : location));
+			return  location.substring(location.indexOf("//") +2, location.indexOf("."));
+		} else {
+			logger.error("Could not get location header!!!");
+			return "ua";
+		}
 	}
 
 	private boolean requestSuccess(HttpResponse result) {
