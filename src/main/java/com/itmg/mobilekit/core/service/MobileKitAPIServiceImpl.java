@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,26 +14,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -327,6 +328,33 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			}
 		}
 		return responsesDataMap;
+	}
+
+	
+	@Override
+	public String fetchUsersLocale(String usersIp) throws MobileKitServiceException {
+
+		logger.debug("Start fetching user's locale.");
+		try {
+			HttpURLConnection con = (HttpURLConnection) (new URL(Config.getInstance().getLocale_host())).openConnection();
+			con.setInstanceFollowRedirects(false);
+			con.connect();		
+			
+			String code = extractLocaleCode(con.getHeaderField("Location"));
+			logger.debug(String.format("Fetched user's country as: %s for IP:%s", code, usersIp));
+			con.disconnect();
+			return code;
+		} catch (MalformedURLException e) {
+			logger.error("Can not get URL connection for Locale check.", e);
+			throw new MobileKitServiceException("Can not get URL connection for Locale check.", e);
+		} catch (IOException e) {
+			logger.error("Failed to read response from Location URL.", e);
+			throw new MobileKitServiceException("Failed to read response from Location URL.", e);
+		}
+	}
+
+	private String extractLocaleCode(String location) {
+		return  location.substring(location.indexOf("//") +2, location.indexOf("."));
 	}
 
 	private boolean requestSuccess(HttpResponse result) {

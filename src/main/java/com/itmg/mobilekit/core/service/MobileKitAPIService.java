@@ -1,10 +1,7 @@
 package com.itmg.mobilekit.core.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.http.client.ClientProtocolException;
 
 import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CategoryAO;
@@ -64,5 +61,7 @@ public interface MobileKitAPIService {
 	NewsContentAO loadNewsDetails(String newsID, String countryCode, String remoteIp) throws  MobileKitServiceException;
 
 	WeatherData loadWeatherData(String locationIp) throws MobileKitServiceException;
+
+	String fetchUsersLocale(String usersIp) throws MobileKitServiceException;
 	
 }

@@ -1,78 +1,82 @@
 package com.itmg.mobilekit.ui.controller;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
 
 @Deprecated
 public class TetstHttpClient {
 
 	public static void main(final String[] args) throws Exception {
-		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(3000).setConnectTimeout(3000).build();
-		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
 		
- 		
-		try {
-			httpclient.start();
-//			final HttpGet[] requests = new HttpGet[] {
-//					new HttpGet("http://google.com"),
-//					new HttpGet("http://docs.oracle.com"),
-//					new HttpGet("http://newshub.org") };
+		String test = "http://uaddd.newshub.org";
 		
-			MyGet[] customGetList = new MyGet[] {
-					new MyGet(new HttpGet("http://google.com"), "Type_1"),
-					new MyGet(new HttpGet("http://ya.com"), "Type_2"),
-					new MyGet(new HttpGet("http://habrahabr.com"), "Type_3"),
-					new MyGet(new HttpGet("http://newshub.org"), "Type_4"),
-			};
-			
-			final CountDownLatch latch = new CountDownLatch(customGetList.length);
-			
+		String code = test.substring(test.indexOf("//") +2, test.indexOf("."));
 		
-//			for (final HttpGet request : requests) {
-//				httpclient.execute(request, new FutureCallback<HttpResponse>() {
-//
-//					public void completed(final HttpResponse response) {
-//					
-//						
-//						latch.countDown();
-//						System.out.println(request.getRequestLine() + "->" + response.getStatusLine());
-//						System.out.println("--response:"+ response.getEntity().toString());
-//					}
-//
-//					public void failed(final Exception ex) {
-//						latch.countDown();
-//						System.out.println(request.getRequestLine() + "->" + ex);
-//					}
-//
-//					public void cancelled() {
-//						latch.countDown();
-//						System.out.println(request.getRequestLine()	+ " cancelled");
-//					}
-//
-//				});
+		System.out.println("--code = "+code);
+		
+		
+//		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(3000).setConnectTimeout(3000).build();
+//		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
+//		
+// 		
+//		try {
+//			httpclient.start();
+////			final HttpGet[] requests = new HttpGet[] {
+////					new HttpGet("http://google.com"),
+////					new HttpGet("http://docs.oracle.com"),
+////					new HttpGet("http://newshub.org") };
+//		
+//			MyGet[] customGetList = new MyGet[] {
+//					new MyGet(new HttpGet("http://google.com"), "Type_1"),
+//					new MyGet(new HttpGet("http://ya.com"), "Type_2"),
+//					new MyGet(new HttpGet("http://habrahabr.com"), "Type_3"),
+//					new MyGet(new HttpGet("http://newshub.org"), "Type_4"),
+//			};
+//			
+//			final CountDownLatch latch = new CountDownLatch(customGetList.length);
+//			
+//		
+////			for (final HttpGet request : requests) {
+////				httpclient.execute(request, new FutureCallback<HttpResponse>() {
+////
+////					public void completed(final HttpResponse response) {
+////					
+////						
+////						latch.countDown();
+////						System.out.println(request.getRequestLine() + "->" + response.getStatusLine());
+////						System.out.println("--response:"+ response.getEntity().toString());
+////					}
+////
+////					public void failed(final Exception ex) {
+////						latch.countDown();
+////						System.out.println(request.getRequestLine() + "->" + ex);
+////					}
+////
+////					public void cancelled() {
+////						latch.countDown();
+////						System.out.println(request.getRequestLine()	+ " cancelled");
+////					}
+////
+////				});
+////			}
+////			
+//			
+//			for (MyGet _get : customGetList) {
+//				MyFutureResponse myResponse = new MyFutureResponse(latch, _get.getGetRequest());
+//				
+//				Future<HttpResponse> answer = httpclient.execute(_get.getGetRequest(), myResponse);
+//				
 //			}
 //			
-			
-			for (MyGet _get : customGetList) {
-				MyFutureResponse myResponse = new MyFutureResponse(latch, _get.getGetRequest());
-				
-				Future<HttpResponse> answer = httpclient.execute(_get.getGetRequest(), myResponse);
-				
-			}
-			
-			latch.await();
-			System.out.println("Shutting down");
-		} finally {
-			httpclient.close();
-		}
-		System.out.println("Done");
+//			latch.await();
+//			System.out.println("Shutting down");
+//		} finally {
+//			httpclient.close();
+//		}
+//		System.out.println("Done");
 	}
 	
 }

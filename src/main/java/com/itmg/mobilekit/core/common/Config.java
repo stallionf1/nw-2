@@ -18,6 +18,7 @@ public class Config {
 	@Configure private String weatherHost; 
 	@Configure private String weatherAPI;
 	@Configure private String usersDeviceLocale;
+	@Configure private String locale_host;
 
 	
 	private Config() {
@@ -67,16 +68,19 @@ public class Config {
 	}
 	public void setWeatherAPI(String weatherAPI) {
 		this.weatherAPI = weatherAPI;
-	}
-	
+	}	
 	public String getUsersDeviceLocale() {
 		return usersDeviceLocale;
 	}
-
 	public void setUsersDeviceLocale(String usersDeviceLocale) {
 		this.usersDeviceLocale = usersDeviceLocale;
 	}
-
+	public String getLocale_host() {
+		return locale_host;
+	}
+	public void setLocale_host(String locale_host) {
+		this.locale_host = locale_host;
+	}
 	public static void main(String[] args) {
 		System.out.println("host="+Config.getInstance().getHost());
 		System.out.println("api_suffix="+Config.getInstance().getApi_suffix());

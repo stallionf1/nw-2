@@ -71,4 +71,17 @@
 		<appender-ref ref="FatalAppender" />
 	</logger>
 	
+	<logger name="org.apache.http" additivity="false">
+    	<level value="DEBUG"/>
+    	<appender-ref ref="DebugAppender" />
+	</logger>
+	
+	<logger name="org.configureme" additivity="false">
+		<level value="ERROR" />
+		<appender-ref ref="ErrorAppender" />
+		<appender-ref ref="FatalAppender" />
+	</logger>
+
+
+	
 </log4j:configuration>

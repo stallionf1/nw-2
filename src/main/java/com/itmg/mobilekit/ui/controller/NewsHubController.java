@@ -27,6 +27,7 @@ import com.itmg.mobilekit.api.response.CountryAO;
 import com.itmg.mobilekit.api.response.MenuItemAO;
 import com.itmg.mobilekit.api.response.NewsContentAO;
 import com.itmg.mobilekit.api.response.WeatherData;
+import com.itmg.mobilekit.core.common.Config;
 import com.itmg.mobilekit.core.exception.MobileKitServiceException;
 import com.itmg.mobilekit.core.service.MobileKitAPIService;
 
@@ -210,11 +211,16 @@ public class NewsHubController {
 	
 	@RequestMapping("/")
 	public void retrieveUsersCountry(HttpServletRequest req, HttpServletResponse response) {
-		System.out.println("----calling / method to get users locale.");
-		HttpSession session = req.getSession();
 		
-		//test commit from home.
-		//test commit from home.
+		try {
+			String usersLocale = service.fetchUsersLocale(req.getRemoteAddr());
+			HttpSession session = req.getSession();
+			
+			session.setAttribute(Config.getInstance().getUsersDeviceLocale(), usersLocale);
+			
+		} catch (MobileKitServiceException e) {
+			
+		}
 	}
 	
 	//Method for all forms.
