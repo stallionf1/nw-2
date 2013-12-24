@@ -338,7 +338,9 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			con.setInstanceFollowRedirects(false);
 			con.addRequestProperty(Config.getInstance().getForwardHeader(), usersIp);
 			con.connect();
-						
+					
+			
+			System.out.println("----------- location header response =" + con.getHeaderField("Location")+".");
 			String code = extractLocaleCode(con.getHeaderField("Location"));
 			
 			logger.debug(String.format("Fetched user's country as: %s for IP:%s", code, usersIp));
