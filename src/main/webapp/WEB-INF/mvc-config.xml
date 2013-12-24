@@ -14,10 +14,13 @@
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
 		<property name="prefix" value="/WEB-INF/view/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+	
+	<mvc:interceptors>
+      <bean class="com.itmg.mobilekit.ui.context.MobileKitInterceptor" />
+    </mvc:interceptors> 
 
    <!-- 
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">

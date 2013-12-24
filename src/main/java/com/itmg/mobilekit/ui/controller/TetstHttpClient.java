@@ -18,6 +18,15 @@ public class TetstHttpClient {
 		System.out.println("--code = "+code);
 		
 		
+		String menuItem = "http://ua.newshub.org/business";
+		
+		int lenght = menuItem.length();
+		int x = menuItem.lastIndexOf("/");
+		
+		String res = menuItem.substring(x+1, lenght);
+		System.out.println("--- menu item = " + res);
+		
+		
 //		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(3000).setConnectTimeout(3000).build();
 //		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
 //		

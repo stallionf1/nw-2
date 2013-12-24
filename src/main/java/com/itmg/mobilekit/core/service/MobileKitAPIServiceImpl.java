@@ -329,14 +329,12 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		}
 		return responsesDataMap;
 	}
-
 	
 	@Override
 	public String fetchUsersLocale(String usersIp) throws MobileKitServiceException {
 
 		logger.debug("Start fetching user's locale.");
-		try {
-			
+		try {			
 			HttpURLConnection con = (HttpURLConnection) (new URL(Config.getInstance().getLocale_host())).openConnection();
 			con.setInstanceFollowRedirects(false);
 			con.addRequestProperty(Config.getInstance().getForwardHeader(), usersIp);

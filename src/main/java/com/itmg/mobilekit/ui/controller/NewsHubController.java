@@ -1,5 +1,6 @@
 package com.itmg.mobilekit.ui.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -192,23 +193,55 @@ public class NewsHubController {
 	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
 		
 		try {
-			List<MenuItemAO> list = service.listMenuItems("UA", req.getRemoteAddr());
+			
+			String country = req.getParameter("countryItemParam");
+			String menuItem = req.getParameter("menuItemParam");
+			
+			System.out.println("----- sending country param="+country);
+			System.out.println("----- sending Menu param="+menuItem);
+			
+			if (country == null) {
+				country = "UA";
+			}
+			
+			if (menuItem != null) {
+				menuItem = extractMenuNameFromUrl(menuItem);
+			}
+			
+			List<MenuItemAO> list = service.listMenuItems(country, req.getRemoteAddr());
 			uiModel.addAttribute("menuItemsList", list);
+			uiModel.addAttribute("countryItemsList", service.listAllCountries(req.getRemoteAddr()));
 			
-			List<CountryAO> countries = service.listAllCountries(req.getRemoteAddr());
+//			WeatherData weather = service.loadWeatherData(req.getRemoteAddr());
+//			System.out.println("--- loaded weather" + weather);			
+//			uiModel.addAttribute("weatherData", weather.getLocation());
 			
-			uiModel.addAttribute("countryItemsList", countries);
-			//No need to add it here, because it has been already added in menuItem();
-			//uiModel.addAttribute("menuItem", new MenuItemAO());
+			List<NewsContentAO> news = new ArrayList<NewsContentAO>();
+			if (menuItem != null) {
+				news = service.loadNewsByMenuSectionAndCountry(menuItem, country, req.getRemoteAddr(), "1", "NO");
+			} else {
+				 news = service.listMainNews(country, "1", "NO", req.getRemoteAddr());	
+			}
+			uiModel.addAttribute("mainNewsList", news);
+			
 			
 		} catch (MobileKitServiceException e) {
 			
-			System.out.println(e);
-		}	
-
+			//e.printStackTrace();
+		}
 		return "mobile_index";
 	}
 	
+	private String extractMenuNameFromUrl(String menuItem) {
+		
+		int lenght = menuItem.length();
+		int x = menuItem.lastIndexOf("/");
+		
+		String res = menuItem.substring(x+1, lenght);
+		System.out.println("--- menu item = " + res);
+		return res;
+	}
+
 	@RequestMapping("/")
 	public void retrieveUsersCountry(HttpServletRequest req, HttpServletResponse response) {
 		
@@ -232,5 +265,19 @@ public class NewsHubController {
 	public CountryAO countryItem() {
 		return new CountryAO();
 	} 
+	
+	
+//	@RequestMapping(value="form", method=RequestMethod.GET)
+//	public String loadPage(Model m) {
+////		m.addAttribute("subscriber", new Subscriber());
+//		return "formPage";
+//	}
+//	
+//	@RequestMapping(value="form", method=RequestMethod.POST)
+//	public String onPageActionChanged(@ModelAttribute MenuItemAO menuItem, Model m) {
+//		m.addAttribute("message", "Successfully saved person: " + menuItem.toString());
+//		return "formPage";
+//	}
+
 		
 }

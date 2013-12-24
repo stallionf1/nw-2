@@ -11,17 +11,17 @@ public class MobileKitServletContextListener implements ServletContextListener  
 		
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		System.out.println(" ============== \n MobileKit was destroyed. \n =============");
+		//System.out.println(" ============== \n MobileKit was destroyed. \n =============");
 		newsUpdater.stopUpdating();
 		
 	}
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		System.out.println(" ============== \n Starting Updater. \n =============");
+	//	System.out.println(" ============== \n Starting Updater. \n =============");
 				
 		newsUpdater.update();
 		
-		System.out.println(" ============== \n MobileKit has been started. \n =============");
+	//	System.out.println(" ============== \n MobileKit has been started. \n =============");
 
 	
 	}
