@@ -17,6 +17,8 @@ public class Config {
 	@Configure private String forwardHeader;
 	@Configure private String weatherHost; 
 	@Configure private String weatherAPI;
+	@Configure private String usersDeviceLocale;
+
 	
 	private Config() {
 		try {
@@ -65,6 +67,14 @@ public class Config {
 	}
 	public void setWeatherAPI(String weatherAPI) {
 		this.weatherAPI = weatherAPI;
+	}
+	
+	public String getUsersDeviceLocale() {
+		return usersDeviceLocale;
+	}
+
+	public void setUsersDeviceLocale(String usersDeviceLocale) {
+		this.usersDeviceLocale = usersDeviceLocale;
 	}
 
 	public static void main(String[] args) {
