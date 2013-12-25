@@ -200,9 +200,11 @@ public class NewsHubController {
 			
 			if (country == null) {
 				country = "UA";
+				session.setAttribute(Config.getInstance().getSessionCountry(), country);
 			}
 			if (menuItem != null) {
 				menuItem = extractMenuNameFromUrl(menuItem);
+				session.setAttribute(Config.getInstance().getSessionCategory(), menuItem);
 			}
 			
 			List<MenuItemAO> list = service.listMenuItems(country, req.getRemoteAddr());
@@ -247,10 +249,8 @@ public class NewsHubController {
 			
 			HttpSession session = req.getSession();
 			List<NewsContentAO> aaa = (List<NewsContentAO>)session.getAttribute("mainNewsList");
-		//	System.out.println("---- sesssion list =" + aaa);
-			
+	
 			String testId = findNewsId(news_url, req.getSession());
-			//System.out.println("******************************* \n FOUND newsID is:"+testId + "*******************");
 			
 			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
 			uiModel.addAttribute("newsObject", newsContent);

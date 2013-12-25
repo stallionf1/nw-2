@@ -11,17 +11,18 @@
 <body>
 
 	<div id="container">
-		<script>
+		<!-- <script>
     		document.write('<a href="' + document.referrer + '">Go Back</a>');
-		</script>
+		</script> -->
+		<button onclick="window.history.go(-1)">Back</button>
 		
 		<div class="news-item">
+		<br/>
 			<a href="<c:out value="${newsObject.news_url}" />" class="block left">
 				<img class="left" width="140"
 				src="<c:out value="${newsObject.img_src}" />"
 				alt="<c:out value="${newsObject.img_alt}" />" />
-			</a> <span class="date block"> <c:out
-					value="${newsObject.date_updated}" /></span> <a
+			</a> <span class="date block"> <c:out value="${newsObject.date_updated}" /></span> <a
 				href="<c:out value="${newsObject.news_url}" />"
 				class="news-title block"> <c:out
 					value="${newsObject.news_title}" />

@@ -19,7 +19,8 @@ public class Config {
 	@Configure private String weatherAPI;
 	@Configure private String usersDeviceLocale;
 	@Configure private String locale_host;
-
+	@Configure private String sessionCountry;
+	@Configure private String sessionCategory;
 	
 	private Config() {
 		try {
@@ -80,7 +81,20 @@ public class Config {
 	}
 	public void setLocale_host(String locale_host) {
 		this.locale_host = locale_host;
+	}	
+	public String getSessionCountry() {
+		return sessionCountry;
 	}
+	public void setSessionCountry(String sessionCountry) {
+		this.sessionCountry = sessionCountry;
+	}
+	public String getSessionCategory() {
+		return sessionCategory;
+	}
+	public void setSessionCategory(String sessionCategory) {
+		this.sessionCategory = sessionCategory;
+	}
+
 	public static void main(String[] args) {
 		System.out.println("host="+Config.getInstance().getHost());
 		System.out.println("api_suffix="+Config.getInstance().getApi_suffix());
