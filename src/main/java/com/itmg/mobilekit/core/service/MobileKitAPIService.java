@@ -66,4 +66,5 @@ public interface MobileKitAPIService {
 	
 	List<NewsContentAO> searchNewsBy (String searchParam, String countryCode, String categoryCode, String pageId, String remoteIp) throws MobileKitServiceException;
 	
+	List<NewsContentAO> getTopNews(String countryCode, String remoteIp) throws MobileKitServiceException;
 }

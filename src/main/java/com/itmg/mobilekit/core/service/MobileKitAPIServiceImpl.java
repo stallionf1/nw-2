@@ -375,7 +375,28 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			logger.error("Failed to read HttpResponse.", e);
 			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
 		}
-	}	
+	}
+	
+	@Override
+	public List<NewsContentAO> getTopNews(String countryCode, String remoteIp) throws MobileKitServiceException {
+		logger.debug("Start executing TOP_NEWS request");
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();		
+		HeaderHttpGet get = new HeaderHttpGet(getTopNewsLink(countryCode), remoteIp);
+		
+		try {
+			List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("topnews"));
+			httpclient.close();
+			logger.debug("Finished loading top news.");
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest fro TOP_NEWS.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest for TOP_NEWS", e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse from TOP_NEWS", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse from TOP_NEWS", e);
+		}
+	}
 
 	private String extractLocaleCode(String location) {
 		if (location != null) {
@@ -543,6 +564,12 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		String url = String.format("%s%s%s%s&searchParam=%s&countryCode=%s&category=%s&pageId=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
 				"/searchNewsBy?", Config.getInstance().getToken(), searchParam, countryCode, categoryCode == null ? "all" : categoryCode, pageId);
 		
+		return url;
+	}
+	
+	private String getTopNewsLink(String countryCode) {
+		String url = String.format("%s%s%s%s&countryCode=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/getTopNews?", Config.getInstance().getToken(), countryCode);
 		return url;
 	}
 }

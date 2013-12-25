@@ -222,15 +222,22 @@ public class NewsHubController {
 				 news = service.listMainNews(countryFromRequest, "1", "NO", req.getRemoteAddr());	
 			}
 			uiModel.addAttribute("mainNewsList", news);
-			//TODO: clean it and place it to right place!
 			
+			List<NewsContentAO> topNews = service.getTopNews(getSessionCountry(session), req.getRemoteAddr());
+			uiModel.addAttribute("topNews", topNews);
+			news.addAll(topNews);
 			session.setAttribute("mainNewsList", news);
 			
 		} catch (MobileKitServiceException e) {
-			
-			//e.printStackTrace();
+			e.printStackTrace();
+			return "some_error_page";
 		}
 		return "mobile_index";
+	}
+	
+	private String getSessionCountry(HttpSession session) {
+		Object res = session.getAttribute(Config.getInstance().getSessionCountry());
+		return res != null ? (String)res : "ua";
 	}
 	
 	private String extractMenuNameFromUrl(String menuItem) {
