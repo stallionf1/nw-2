@@ -10,8 +10,9 @@ public class NewsContentAO extends APIResponseObject {
 	private String img_alt;
 	private String date_updated;
 	private String news_title;
-	private String news_content;
+	private String news_content;	
 	private boolean parsed;
+	private String short_url;
 	
 	public String getNews_id() {
 		return news_id;
@@ -60,6 +61,12 @@ public class NewsContentAO extends APIResponseObject {
 	}
 	public void setParsed(boolean parsed) {
 		this.parsed = parsed;
+	}	
+	public String getShort_url() {
+		return short_url;
+	}
+	public void setShort_url(String short_url) {
+		this.short_url = short_url;
 	}
 	@Override
 	public String toString() {

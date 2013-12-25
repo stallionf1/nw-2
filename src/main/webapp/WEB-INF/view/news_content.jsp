@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>NewsHub.org</title>
+<title>NewsHub.org- News Content</title>
 
 <style>
 body {
@@ -48,38 +48,16 @@ form {
 </head>
 <body>
 
-	<a href="news_url">Some test</a>
-
-
 	<div id="container">
-		<form method="get" action="" name="menuForm">
-			<select id="menuItem" name="menuItemParam" onchange="this.form.submit()">
-				<c:forEach var="menuItem" items="${menuItemsList}">
-					<option value="<c:out value="${menuItem.url}" />"><c:out
-							value="${menuItem.name}" />
-				</c:forEach>
-			</select>
-		</form>
-
-		<form method="get" action="" name="countryForm">
-			<select id="countryItem" name="countryItemParam" onchange="this.form.submit()">
-				<c:forEach var="countryItem" items="${countryItemsList}">
-					<option value="<c:out value="${countryItem.code}" />"><c:out
-							value="${countryItem.name}" />
-				</c:forEach>
-			</select>
-		</form>
-
-		<div class="news">
-			<c:forEach var="newsObject" items="${mainNewsList}">
-				<div class="news-item">
-					<a href="<c:out value="${newsObject.short_url}" />"
+		<div class="news-item">
+				<c:out value="${newsObject.news_id}" />
+					<a href="<c:out value="${newsObject.news_url}" />"
 						class="block left"> <img class="left" width="140"
 						src="<c:out value="${newsObject.img_src}" />"
 						alt="<c:out value="${newsObject.img_alt}" />" />
 					</a> 
 					<span class="date block"> <c:out value="${newsObject.date_updated}" /></span>
-					 <a	href="<c:out value="${newsObject.short_url}" />" class="news-title block">
+					 <a	href="<c:out value="${newsObject.news_url}" />" class="news-title block">
 					 	 <c:out value="${newsObject.news_title}" />
 					 </a>
 					<p>
@@ -87,9 +65,6 @@ form {
 					</p>
 
 				</div>
-			</c:forEach>
-
-		</div>
 	</div>
 </body>
 </html>

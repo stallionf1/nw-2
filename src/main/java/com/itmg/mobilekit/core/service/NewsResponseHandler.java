@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -50,7 +51,26 @@ public class NewsResponseHandler extends BaseResponseHandler implements Response
 			Type contriesAoType = new TypeToken<List<NewsContentAO>>(){}.getType();
 			List<NewsContentAO> parsedList = gson.fromJson(countries, contriesAoType);
 			
+			ListIterator<NewsContentAO> litr = parsedList.listIterator();
+			while (litr.hasNext()) {
+				NewsContentAO element = litr.next();
+				if (element.isParsed()) {
+					String shortUrl = extractShortUrlFromUrl(element.getNews_url());
+					element.setShort_url(shortUrl);
+					litr.set(element);
+				}
+			}
+		      
 			return parsedList;
 	        
-	    }	
+	    }
+	  private String extractShortUrlFromUrl(String menuItem) {
+			
+			int lenght = menuItem.length();
+			int x = menuItem.lastIndexOf("/");
+			
+			String res = menuItem.substring(x+1, lenght);
+			System.out.println("--- short URL = " + res);
+			return res;
+		}
 }

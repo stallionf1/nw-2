@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -189,7 +190,7 @@ public class NewsHubController {
 		}
 	}
 	
-	@RequestMapping("/index") 
+	@RequestMapping("/") 
 	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
 		
 		try {			
@@ -222,7 +223,9 @@ public class NewsHubController {
 				 news = service.listMainNews(country, "1", "NO", req.getRemoteAddr());	
 			}
 			uiModel.addAttribute("mainNewsList", news);
-			
+			//TODO: clean it and place it to right place!
+			HttpSession session = req.getSession(true);
+			session.setAttribute("mainNewsList", news);
 			
 		} catch (MobileKitServiceException e) {
 			
@@ -237,11 +240,51 @@ public class NewsHubController {
 		int x = menuItem.lastIndexOf("/");
 		
 		String res = menuItem.substring(x+1, lenght);
-		System.out.println("--- menu item = " + res);
+		//System.out.println("--- menu item = " + res);
 		return res;
 	}
+	
+	@RequestMapping("/{news_url}")
+	public String showNewsContentDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		try {
+			
+			HttpSession session = req.getSession();
+			List<NewsContentAO> aaa = (List<NewsContentAO>)session.getAttribute("mainNewsList");
+		//	System.out.println("---- sesssion list =" + aaa);
+			
+			String testId = findNewsId(news_url, req.getSession());
+			//System.out.println("******************************* \n FOUND newsID is:"+testId + "*******************");
+			
+			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
+			uiModel.addAttribute("newsObject", newsContent);
+			return "news_content";
+		} catch (MobileKitServiceException e) {
+			e.printStackTrace();
+		}
+		return "news_content";
+		
+	}
+	
+	private String findNewsId(String url, HttpSession session) {
+		if (session.getAttribute("mainNewsList") != null) {
+			List<NewsContentAO> news = (List<NewsContentAO>) session.getAttribute("mainNewsList");
+			
+		//	System.out.println("--- checking url = " + url);
+			
+			for (NewsContentAO element : news) {
+			//	System.out.println("Short url="+element.getShort_url());
+			//	System.out.println("News url="+element.getNews_url());
+				if (element.getNews_url().contains(url)) {
+					
+			//		System.out.println(" ---- GOT news ID = "+ element.getNews_id());
+					return element.getNews_id();
+				}
+			}
+		}
+		return "NOT_FOUND"; //dummy paramenter.
+	}
 
-	@RequestMapping("/")
+	@RequestMapping("/tmp")
 	public void retrieveUsersCountry(HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
