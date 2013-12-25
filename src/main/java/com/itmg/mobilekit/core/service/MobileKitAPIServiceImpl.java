@@ -354,6 +354,28 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 			throw new MobileKitServiceException("Failed to read response from Location URL.", e);
 		}
 	}
+	
+	@Override
+	public List<NewsContentAO> searchNewsBy(String searchParam, String countryCode, String categoryCode, String pageId, String remoteIp)
+			throws MobileKitServiceException {
+		logger.debug("Start Searching for news.");
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();		
+		HeaderHttpGet get = new HeaderHttpGet(getSearchNewsLink(searchParam, countryCode, categoryCode, pageId), remoteIp);
+		
+		try {
+			List<NewsContentAO> myjson = httpclient.execute(get, new NewsResponseHandler("searched_news"));
+			httpclient.close();
+			logger.debug("Finished searching news.");
+			return myjson;
+		} catch (ClientProtocolException e) {
+			logger.error("Failed to initialize HttpRequest.", e);
+			throw new MobileKitServiceException("Failed to initialize HttpRequest.",	e);
+		} catch (IOException e) {
+			logger.error("Failed to read HttpResponse.", e);
+			throw new MobileKitServiceException("Failed to read HttpResponse.",	e);
+		}
+	}	
 
 	private String extractLocaleCode(String location) {
 		if (location != null) {
@@ -439,7 +461,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		//String slider_news_URL = Constants.NEWS_HUB_API_URL + Constants.COUNTRIES_API_NAME + "?" + Constants.NEWS_HUB_TOKEN;
 		String menu_items_URL = generateMenuItemsURL("UA");
 
-		System.out.println("---------" + menu_items_URL);
+		//System.out.println("---------" + menu_items_URL);
 		
 		List<HttpGet> list = new ArrayList<HttpGet>();
 		list.add(new HttpGet(countries_URL));
@@ -514,6 +536,13 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	private String getDetailedNewsContentUrl(String newsId) {
 		String url = String.format("%s%s%s%s&newsID=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
 				"/getDetailedNewsContent?", Config.getInstance().getToken(), newsId);
+		return url;
+	}
+	
+	private String getSearchNewsLink(String searchParam, String countryCode, String categoryCode, String pageId) {
+		String url = String.format("%s%s%s%s&searchParam=%s&countryCode=%s&category=%s&pageId=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+				"/searchNewsBy?", Config.getInstance().getToken(), searchParam, countryCode, categoryCode == null ? "all" : categoryCode, pageId);
+		
 		return url;
 	}
 }

@@ -64,4 +64,6 @@ public interface MobileKitAPIService {
 
 	String fetchUsersLocale(String usersIp) throws MobileKitServiceException;
 	
+	List<NewsContentAO> searchNewsBy (String searchParam, String countryCode, String categoryCode, String pageId, String remoteIp) throws MobileKitServiceException;
+	
 }

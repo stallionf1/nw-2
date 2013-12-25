@@ -7,50 +7,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>NewsHub.org- News Content</title>
 
-<style>
-body {
-	background-color: #eee;
-	font: helvetica;
-}
-
-#container {
-	width: 500px;
-	background-color: #fff;
-	margin: 30px auto;
-	padding: 30px;
-	border-radius: 5px;
-	box-shadow: 5px;
-}
-
-.green {
-	font-weight: bold;
-	color: green;
-}
-
-.message {
-	margin-bottom: 10px;
-}
-
-label {
-	width: 70px;
-	display: inline-block;
-}
-
-form {
-	line-height: 160%;
-}
-
-.hide {
-	display: none;
-}
-</style>
-
 </head>
 <body>
 
 	<div id="container">
 		<div class="news-item">
-				<c:out value="${newsObject.news_id}" />
 					<a href="<c:out value="${newsObject.news_url}" />"
 						class="block left"> <img class="left" width="140"
 						src="<c:out value="${newsObject.img_src}" />"

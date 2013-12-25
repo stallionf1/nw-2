@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -7,51 +6,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>NewsHub.org</title>
 
-<style>
-body {
-	background-color: #eee;
-	font: helvetica;
-}
-
-#container {
-	width: 500px;
-	background-color: #fff;
-	margin: 30px auto;
-	padding: 30px;
-	border-radius: 5px;
-	box-shadow: 5px;
-}
-
-.green {
-	font-weight: bold;
-	color: green;
-}
-
-.message {
-	margin-bottom: 10px;
-}
-
-label {
-	width: 70px;
-	display: inline-block;
-}
-
-form {
-	line-height: 160%;
-}
-
-.hide {
-	display: none;
-}
-</style>
-
 </head>
 <body>
 
-	<a href="news_url">Some test</a>
-
+<%
+       request.setCharacterEncoding("UTF-8");
+       
+     %>
 
 	<div id="container">
+	<div id = "controls">
 		<form method="get" action="" name="menuForm">
 			<select id="menuItem" name="menuItemParam" onchange="this.form.submit()">
 				<c:forEach var="menuItem" items="${menuItemsList}">
@@ -70,6 +34,17 @@ form {
 			</select>
 		</form>
 
+   </div>
+    <div class="search clearfix">
+        <form action="search" method="GET" name="searchForm" accept-charset="UTF-8">
+            <div class="search-inp left">
+                <input name="searchParam" class="q" type="text" value="" placeholder="Шукати"/>
+                <input type="hidden" name="country" value="ua">                
+            </div>
+            <button class="cur-p searchBtn" type="submit" value="">do search</button>
+        </form>
+    </div>
+   
 		<div class="news">
 			<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">

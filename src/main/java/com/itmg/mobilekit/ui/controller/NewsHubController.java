@@ -1,5 +1,7 @@
 package com.itmg.mobilekit.ui.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.itmg.mobilekit.api.APITypes;
 import com.itmg.mobilekit.api.response.CategoryAO;
@@ -265,18 +264,31 @@ public class NewsHubController {
 		
 	}
 	
+	@RequestMapping("/search")
+	public String searchNews(Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		
+		try {
+			List<NewsContentAO> searched = service.searchNewsBy(
+					req.getParameter("searchParam"),
+					req.getParameter("countryCode"), 
+					req.getParameter("categoryCode"), "1", req.getRemoteAddr());
+			
+			uiModel.addAttribute("mainNewsList", searched);
+			//TODO: clean it and place it to right place!
+			HttpSession session = req.getSession();
+			session.setAttribute("mainNewsList", searched);
+			
+		} catch (MobileKitServiceException e) {
+			//e.printStackTrace();
+		}
+		return "mobile_index";
+	}
+	
 	private String findNewsId(String url, HttpSession session) {
 		if (session.getAttribute("mainNewsList") != null) {
 			List<NewsContentAO> news = (List<NewsContentAO>) session.getAttribute("mainNewsList");
-			
-		//	System.out.println("--- checking url = " + url);
-			
 			for (NewsContentAO element : news) {
-			//	System.out.println("Short url="+element.getShort_url());
-			//	System.out.println("News url="+element.getNews_url());
 				if (element.getNews_url().contains(url)) {
-					
-			//		System.out.println(" ---- GOT news ID = "+ element.getNews_id());
 					return element.getNews_id();
 				}
 			}
