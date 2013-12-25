@@ -250,14 +250,15 @@ public class NewsHubController {
 			HttpSession session = req.getSession();
 			String testId = findNewsId(news_url, req.getSession());
 			
+			System.out.println("--clickable url" + news_url);
+			
 			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
 			uiModel.addAttribute("newsObject", newsContent);
 			return "news_content";
 		} catch (MobileKitServiceException e) {
 			e.printStackTrace();
 		}
-		return "news_content";
-		
+		return "news_content";		
 	}
 	
 	@RequestMapping("/search")
@@ -269,10 +270,10 @@ public class NewsHubController {
 					req.getParameter("countryCode"), 
 					req.getParameter("categoryCode"), "1", req.getRemoteAddr());
 			
-			uiModel.addAttribute("searchResultNewsList", searched);
+			uiModel.addAttribute("mainNewsList", searched);
 			
 			HttpSession session = req.getSession();
-			session.setAttribute("searchResultNewsList", searched);
+			session.setAttribute("mainNewsList", searched);
 			
 		} catch (MobileKitServiceException e) {
 			//e.printStackTrace();
