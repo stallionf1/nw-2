@@ -16,13 +16,20 @@
 
 	<div id="container">
 	<div id="controls">
-	<c:forEach items="${menuItemsList}" var="menuItem">
+
+<TABLE BORDER="0">
+<TR>
+<c:forEach items="${menuItemsList}" var="menuItem">
+<TD>
  		<form method="post"  action="">
    			<input type="hidden" name="menuItemParam" value="${menuItem.url}"/>
-   				<input type="submit" name="${menuItem.url}" value="${menuItem.name}" />
+   			<input type="submit" name="${menuItem.url}" value="${menuItem.name}" />
+
   		</form>        
-	</c:forEach>
-		
+</TD>
+</c:forEach>
+</TR>
+</TABLE>
 		<br/>
 		<form method="post" action="" name="countryForm">
 			<select id="countryItem" name="countryItemParam" onchange="this.form.submit()">
@@ -37,13 +44,13 @@
     <div class="search clearfix">
         <form action="search" method="GET" name="searchForm" accept-charset="UTF-8">
             <div class="search-inp left">
-                <input name="searchParam" class="q" type="text" value="" placeholder="Шукати"/>
+                <input name="searchParam" class="q" type="text" value="" placeholder="Search"/>
                 <input type="hidden" name="country" value="ua">                
             </div>
-            <button class="cur-p searchBtn" type="submit" value="">do search</button>
+            <button class="cur-p searchBtn" type="submit" value="">Search</button>
         </form>
     </div>
-   
+   <br/>
 		<div class="news">
 			<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">
