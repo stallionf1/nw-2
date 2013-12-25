@@ -1,9 +1,15 @@
 package com.itmg.mobilekit.api.response;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class NewsContentAO extends APIResponseObject {
+public class NewsContentAO extends APIResponseObject implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3544905602292435814L;
+	
 	private String news_id;
 	private String news_url;
 	private String img_src;

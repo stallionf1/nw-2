@@ -11,21 +11,25 @@
 <body>
 
 	<div id="container">
+		<script>
+    		document.write('<a href="' + document.referrer + '">Go Back</a>');
+		</script>
+		
 		<div class="news-item">
-					<a href="<c:out value="${newsObject.news_url}" />"
-						class="block left"> <img class="left" width="140"
-						src="<c:out value="${newsObject.img_src}" />"
-						alt="<c:out value="${newsObject.img_alt}" />" />
-					</a> 
-					<span class="date block"> <c:out value="${newsObject.date_updated}" /></span>
-					 <a	href="<c:out value="${newsObject.news_url}" />" class="news-title block">
-					 	 <c:out value="${newsObject.news_title}" />
-					 </a>
-					<p>
-						<span><c:out value="${newsObject.news_content}" /></span>
-					</p>
-
-				</div>
+			<a href="<c:out value="${newsObject.news_url}" />" class="block left">
+				<img class="left" width="140"
+				src="<c:out value="${newsObject.img_src}" />"
+				alt="<c:out value="${newsObject.img_alt}" />" />
+			</a> <span class="date block"> <c:out
+					value="${newsObject.date_updated}" /></span> <a
+				href="<c:out value="${newsObject.news_url}" />"
+				class="news-title block"> <c:out
+					value="${newsObject.news_title}" />
+			</a>
+			<p>
+				<span><c:out value="${newsObject.news_content}" /></span>
+			</p>
+		</div>
 	</div>
 </body>
 </html>

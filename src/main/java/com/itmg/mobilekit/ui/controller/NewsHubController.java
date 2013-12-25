@@ -196,13 +196,11 @@ public class NewsHubController {
 			String country = req.getParameter("countryItemParam");
 			String menuItem = req.getParameter("menuItemParam");
 			
-			System.out.println("----- sending country param="+country);
-			System.out.println("----- sending Menu param="+menuItem);
+			HttpSession session = req.getSession(true);
 			
 			if (country == null) {
 				country = "UA";
 			}
-			
 			if (menuItem != null) {
 				menuItem = extractMenuNameFromUrl(menuItem);
 			}
@@ -223,7 +221,7 @@ public class NewsHubController {
 			}
 			uiModel.addAttribute("mainNewsList", news);
 			//TODO: clean it and place it to right place!
-			HttpSession session = req.getSession(true);
+			
 			session.setAttribute("mainNewsList", news);
 			
 		} catch (MobileKitServiceException e) {

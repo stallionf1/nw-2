@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>NewsHub.org</title>
-
+ 
 </head>
 <body>
 
@@ -15,17 +15,16 @@
      %>
 
 	<div id="container">
-	<div id = "controls">
-		<form method="get" action="" name="menuForm">
-			<select id="menuItem" name="menuItemParam" onchange="this.form.submit()">
-				<c:forEach var="menuItem" items="${menuItemsList}">
-					<option value="<c:out value="${menuItem.url}" />"><c:out
-							value="${menuItem.name}" />
-				</c:forEach>
-			</select>
-		</form>
-
-		<form method="get" action="" name="countryForm">
+	<div id="controls">
+	<c:forEach items="${menuItemsList}" var="menuItem">
+ 		<form method="post"  action="">
+   			<input type="hidden" name="menuItemParam" value="${menuItem.url}"/>
+   				<input type="submit" name="${menuItem.url}" value="${menuItem.name}" />
+  		</form>        
+	</c:forEach>
+		
+		<br/>
+		<form method="post" action="" name="countryForm">
 			<select id="countryItem" name="countryItemParam" onchange="this.form.submit()">
 				<c:forEach var="countryItem" items="${countryItemsList}">
 					<option value="<c:out value="${countryItem.code}" />"><c:out
