@@ -193,21 +193,21 @@ public class NewsHubController {
 	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
 		
 		try {			
-			String country = req.getParameter("countryItemParam");
-			String menuItem = req.getParameter("menuItemParam");
+			String countryFromRequest = req.getParameter("countryItemParam");
+			String menuFromRequest = req.getParameter("menuItemParam");
 			
 			HttpSession session = req.getSession(true);
 			
-			if (country == null) {
-				country = "UA";
-				session.setAttribute(Config.getInstance().getSessionCountry(), country);
+			if (countryFromRequest == null) {
+				countryFromRequest = "UA";
+				session.setAttribute(Config.getInstance().getSessionCountry(), countryFromRequest);
 			}
-			if (menuItem != null) {
-				menuItem = extractMenuNameFromUrl(menuItem);
-				session.setAttribute(Config.getInstance().getSessionCategory(), menuItem);
+			if (menuFromRequest != null) {
+				menuFromRequest = extractMenuNameFromUrl(menuFromRequest);
+				session.setAttribute(Config.getInstance().getSessionCategory(), menuFromRequest);
 			}
 			
-			List<MenuItemAO> list = service.listMenuItems(country, req.getRemoteAddr());
+			List<MenuItemAO> list = service.listMenuItems(countryFromRequest, req.getRemoteAddr());
 			uiModel.addAttribute("menuItemsList", list);
 			uiModel.addAttribute("countryItemsList", service.listAllCountries(req.getRemoteAddr()));
 			
@@ -216,10 +216,10 @@ public class NewsHubController {
 //			uiModel.addAttribute("weatherData", weather.getLocation());
 			
 			List<NewsContentAO> news = new ArrayList<NewsContentAO>();
-			if (menuItem != null) {
-				news = service.loadNewsByMenuSectionAndCountry(menuItem, country, req.getRemoteAddr(), "1", "NO");
+			if (menuFromRequest != null) {
+				news = service.loadNewsByMenuSectionAndCountry(menuFromRequest, countryFromRequest, req.getRemoteAddr(), "1", "NO");
 			} else {
-				 news = service.listMainNews(country, "1", "NO", req.getRemoteAddr());	
+				 news = service.listMainNews(countryFromRequest, "1", "NO", req.getRemoteAddr());	
 			}
 			uiModel.addAttribute("mainNewsList", news);
 			//TODO: clean it and place it to right place!
@@ -248,8 +248,6 @@ public class NewsHubController {
 		try {
 			
 			HttpSession session = req.getSession();
-			List<NewsContentAO> aaa = (List<NewsContentAO>)session.getAttribute("mainNewsList");
-	
 			String testId = findNewsId(news_url, req.getSession());
 			
 			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
@@ -271,15 +269,15 @@ public class NewsHubController {
 					req.getParameter("countryCode"), 
 					req.getParameter("categoryCode"), "1", req.getRemoteAddr());
 			
-			uiModel.addAttribute("mainNewsList", searched);
-			//TODO: clean it and place it to right place!
+			uiModel.addAttribute("searchResultNewsList", searched);
+			
 			HttpSession session = req.getSession();
-			session.setAttribute("mainNewsList", searched);
+			session.setAttribute("searchResultNewsList", searched);
 			
 		} catch (MobileKitServiceException e) {
 			//e.printStackTrace();
 		}
-		return "mobile_index";
+		return "search_results";
 	}
 	
 	private String findNewsId(String url, HttpSession session) {
