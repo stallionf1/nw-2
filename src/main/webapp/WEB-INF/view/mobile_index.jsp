@@ -11,7 +11,7 @@
   <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>	
 
   <script type="text/javascript">
-  var pageId = 1;
+  var pageId = 2;
   $(document).ready(function(){
      $("#buttonUpload").click(function(){
        $.ajax({
