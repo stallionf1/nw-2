@@ -213,9 +213,11 @@ public class NewsHubController {
 			uiModel.addAttribute("menuItemsList", list);
 			uiModel.addAttribute("countryItemsList", service.listAllCountries(req.getRemoteAddr()));
 			
-//			WeatherData weather = service.loadWeatherData(req.getRemoteAddr());
-//			System.out.println("--- loaded weather" + weather);			
-//			uiModel.addAttribute("weatherData", weather.getLocation());
+			WeatherData weather = service.loadWeatherData(req.getRemoteAddr());
+			System.out.println("--- loaded weather" + weather);
+			if (weather != null) {
+				uiModel.addAttribute("weatherData", weather);
+			}
 			
 			List<NewsContentAO> news = new ArrayList<NewsContentAO>();
 			if (menuFromRequest != null) {
@@ -248,18 +250,15 @@ public class NewsHubController {
 		int x = menuItem.lastIndexOf("/");
 		
 		String res = menuItem.substring(x+1, lenght);
-		//System.out.println("--- menu item = " + res);
+		
 		return res;
 	}
 	
 	@RequestMapping("/{news_url}")
 	public String showNewsContentDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {
 		try {
-			
-			HttpSession session = req.getSession();
+		 
 			String testId = findNewsId(news_url, req.getSession());
-			
-			System.out.println("--clickable url" + news_url);
 			
 			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
 			uiModel.addAttribute("newsObject", newsContent);
@@ -276,7 +275,7 @@ public class NewsHubController {
 		try {
 			List<NewsContentAO> searched = service.searchNewsBy(
 					req.getParameter("searchParam"),
-					req.getParameter("countryCode"), 
+					(String)req.getSession().getAttribute(Config.getInstance().getSessionCountry()), 
 					req.getParameter("categoryCode"), "1", req.getRemoteAddr());
 			
 			uiModel.addAttribute("mainNewsList", searched);

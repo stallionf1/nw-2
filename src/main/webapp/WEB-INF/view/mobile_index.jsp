@@ -50,6 +50,14 @@
 							</form>
 						</TD>
 					</c:forEach>
+
+					<td>
+						<div class="weather-title w-t-mob right clearfix">
+							<span class="right"><c:out value="${weatherData.location}" /></span>
+							<span class="right"><c:out value="${weatherData.degree}" /></span>
+						</div>
+						
+					</td>
 				</TR>
 			</TABLE>
 			<br />

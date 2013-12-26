@@ -17,17 +17,17 @@ public class NewsUpdaterImpl implements NewsUpdater {
 	
 	@Override
 	public void update() {
-		timer = new Timer();
-		timer.schedule(new TimerTask() {
-			
-			@Override
-			public void run() {
-			
-				updateNewsContent();
-				
-			}
-		}, 0, 1000L * 60 * 1);
-		
+//		timer = new Timer();
+//		timer.schedule(new TimerTask() {
+//			
+//			@Override
+//			public void run() {
+//			
+//				updateNewsContent();
+//				
+//			}
+//		}, 0, 1000L * 60 * 1);
+//		
 	}
 	
 	@Override
