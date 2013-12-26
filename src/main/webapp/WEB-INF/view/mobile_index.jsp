@@ -7,6 +7,28 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>NewsHub.org</title>
 
+<!--JQUERY-->
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>	
+
+  <script type="text/javascript">
+  var pageId = 1;
+  $(document).ready(function(){
+     $("#buttonUpload").click(function(){
+       $.ajax({
+         url: "load_more_news",
+         type: "GET",
+         cache:true,
+         data: {data:pageId}, 
+         dataType:"html",
+         success: function(newsObject){   
+          	 $("#main_news").append(newsObject);
+        	 pageId++;
+         }
+       });
+     });
+    });
+  </script>
+
 </head>
 <body>
 
@@ -54,7 +76,7 @@
 		</div>
 		<br />
 		
-		<div class="top_news"> 
+		<div id="top_news" class="top_news"> 
 		<p>TOP NEWS</p>
 		<!-- Move it to separate jsp page for showing NewsContent -->
 			<c:forEach var="newsObject" items="${topNews}">
@@ -92,7 +114,7 @@
 			<!-- Move it to separate jsp page for showing NewsContent  END -->
 		</div>
 		
-		<div class="news">
+		<div id="main_news" class="news">
 			<p>NEWS</p>
 			<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">
@@ -133,5 +155,11 @@
 
 		</div>
 	</div>
+	
+<button id="buttonUpload">Load more</button>
+  <br />
+  <hr />
+ <div id="dataUpload"></div>
+	
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.itmg.mobilekit.ui.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -312,6 +314,58 @@ public class NewsHubController {
 		} catch (MobileKitServiceException e) {
 			
 		}
+	}
+	
+	@RequestMapping("/load_more_news")
+	public void scrollExample (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		System.out.println("------ calling ajax ----");
+		String data = req.getParameter("data");
+		System.out.println("--- received parameter from ajax="+ data);
+	
+		
+		try {			
+			List<NewsContentAO> moreNewsList = service.listMainNews("ua", data, "NO", req.getRemoteAddr());
+			
+			System.out.println(" -- get news for page = " +data + "with result of: " + moreNewsList.size());
+			
+			response.setContentType( "text/html" );
+			response.setCharacterEncoding( "UTF-8" );
+			PrintWriter out = response.getWriter();
+			
+			for (NewsContentAO item : moreNewsList) {
+
+				out.write("<div class=\"news-item\">");
+				if (item.isParsed()) {
+					out.write("<a href=" + item.getShort_url() + "><img class=\"left\" width=\"140\" src="
+							+ item.getImg_src() + " alt=" + item.getImg_alt()
+							+ "/></a>");
+				} else {
+					out.write("<a href=" + item.getNews_url() + "><img class=\"left\" width=\"140\" src="
+							+ item.getImg_src() + " alt=" + item.getImg_alt()
+							+ "/></a>");
+				}
+				out.write("<span class=\"date block\">"+item.getDate_updated()+"/></span>");
+				
+				out.write("<span>" + item.getNews_content() + "</span>");
+
+				if (item.isParsed()) {
+					out.write("<a href=" + item.getShort_url() + ">"
+							+ item.getNews_title() + "</a>");
+				} else {
+					out.write("<a href=" + item.getNews_url() + ">"
+							+ item.getNews_title() + "</a>");
+				}
+
+				out.write("</div>");
+			}
+			
+			out.close();
+		} catch (MobileKitServiceException e1) {			
+			e1.printStackTrace();
+		}		
+		catch (IOException e) {			
+			e.printStackTrace();
+		}	
 	}
 	
 	//Method for all forms.

@@ -6,7 +6,7 @@
 	"weatherHost"  : "http://ua.newshub.org",	
 	"weatherAPI"   : "/weather/data",
 	"usersDeviceLocale" : "users_Device_Locale",
-	"locale_host" : "http://newshub.org",
+	"locale_host"  : "http://newshub.org",
 	"sessionCountry" : "session_param_country",
 	"sessionCategory": "session_param_category"
 }
