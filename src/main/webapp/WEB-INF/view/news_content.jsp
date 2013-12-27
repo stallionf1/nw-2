@@ -16,10 +16,10 @@ $(document).ready(function(){
         url: "load_previous_news",
         type: "POST",
         cache: true,
-        data: {currentNewsId: '${newsObject.news_id}'}, 
+        data: {data: '${currentNewsId}'}, 
         dataType: "html",
         success: function(newsObject){   
-         	 $("#news_item").append("<b>Response</b>");         	
+         	 $("#news_item").html(newsObject);         	
        	 pageId++;
         }
       });
@@ -30,12 +30,12 @@ $(document).ready(function(){
     $("#showNextNewsButton").click(function(){
       $.ajax({
         url: "load_next_news",
-        type: "POST",
+        type: "GET",
         cache: true,
         data: {currentNewsId: '${newsObject.news_id}'}, 
         dataType: "html",
         success: function(newsObject){   
-       	 $("#news-item").html("<b>content changed! by NEXT</b>");
+       	 $("#news_item").html("<b>content changed! by NEXT</b>");
        	 pageId++;
         }
       });
@@ -49,6 +49,7 @@ $(document).ready(function(){
 		<button onclick="window.history.go(-1)">Back</button>	
 			
 		<div id="news_item" class="news-item">
+		<input type="hidden" name="newsId" value="${currentNewsId}"/>
 		<br/>
 		<img class="left" width="140" src="<c:out value="${newsObject.img_src}" />"
 				alt="<c:out value="${newsObject.img_alt}" />" />
@@ -56,12 +57,12 @@ $(document).ready(function(){
 			<span class="date block"> <c:out value="${newsObject.date_updated}" /></span>
 			 <p><b> 
 			 	<c:out value="${newsObject.news_title}" />
-			 	</b>
-			</p>
+			 	</b></p>
 			<p>
 				<span><c:out value="${newsObject.news_content}" /></span>
 			</p>
 		</div>
+		
 		<div id="controls">
 			<%
 				//int index = Integer.valueOf(request.getParameter("page_index"));

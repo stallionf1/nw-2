@@ -283,6 +283,7 @@ public class NewsHubController {
 		try {
 		 
 			String testId = findNewsId(news_url, req.getSession());
+			uiModel.addAttribute("currentNewsId", testId);
 			
 			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
 			uiModel.addAttribute("newsObject", newsContent);
@@ -383,6 +384,7 @@ public class NewsHubController {
 				out.write("</p>");
 				
 				out.write("</div>");
+			
 			}
 			
 			out.close();
@@ -396,11 +398,12 @@ public class NewsHubController {
 	
 	@RequestMapping("/load_previous_news")
 	public void loadPreviousNews (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
-		System.out.println("----------------- calling Load_previous_news");
-		
+	
 		//TODO: create news data storage.
-		String currentNewsId = req.getParameter("currentNewsId");
+		String currentNewsId = req.getParameter("data");
 		System.out.println("------------ current news is=" +currentNewsId);
+		
+		
 		if (currentNewsId != null) {
 			List<NewsContentAO> currentSessionNews = (List<NewsContentAO>)req.getSession().getAttribute("mainNewsList");
 			for (NewsContentAO news : currentSessionNews) {
@@ -426,8 +429,11 @@ public class NewsHubController {
 								+ "<span class=\"date block\">"+fullNewsContent.getDate_updated()+"</span>"
 								+ "<p><b>"+fullNewsContent.getNews_title()+"</b></p><p>"
 								+ "<span>"+fullNewsContent.getNews_content()+"</span></p>");
+						out.write("<input type=\"hidden\" name=\"newsId\" value="+fullNewsContent.getNews_id()+"/>");
 						out.close();
 						
+						
+						uiModel.addAttribute("currentNewsId", fullNewsContent.getNews_id());
 						
 					} catch (MobileKitServiceException e) {
 						// TODO Auto-generated catch block
@@ -458,19 +464,6 @@ public class NewsHubController {
 	public CountryAO countryItem() {
 		return new CountryAO();
 	} 
-	
-	
-//	@RequestMapping(value="form", method=RequestMethod.GET)
-//	public String loadPage(Model m) {
-////		m.addAttribute("subscriber", new Subscriber());
-//		return "formPage";
-//	}
-//	
-//	@RequestMapping(value="form", method=RequestMethod.POST)
-//	public String onPageActionChanged(@ModelAttribute MenuItemAO menuItem, Model m) {
-//		m.addAttribute("message", "Successfully saved person: " + menuItem.toString());
-//		return "formPage";
-//	}
 
 		
 }
