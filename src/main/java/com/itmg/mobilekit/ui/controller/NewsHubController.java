@@ -220,6 +220,7 @@ public class NewsHubController {
 			searchCountry = (requestCountry == null) ? sessionCountry : requestCountry;
 			updateSessionCountry(searchCountry, session);
 			
+			System.out.println("--session country = " + getCountryFromSession(session));
 			
 			String searchCategory = "all"; //by default - all.
 			String sessionCategory = getCountryFromSession(req.getSession());
