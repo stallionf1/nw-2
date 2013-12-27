@@ -33,8 +33,9 @@
 				alt="<c:out value="${newsObject.img_alt}" />" />
 			
 			<span class="date block"> <c:out value="${newsObject.date_updated}" /></span>
-			 <p> 
+			 <p><b> 
 			 	<c:out value="${newsObject.news_title}" />
+			 	</b>
 			</p>
 			<p>
 				<span><c:out value="${newsObject.news_content}" /></span>
