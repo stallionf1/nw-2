@@ -44,8 +44,7 @@
 					<c:forEach items="${menuItemsList}" var="menuItem">
 						<TD>
 							<form method="post" action="">
-								<input type="hidden" name="menuItemParam"
-									value="${menuItem.url}" /> <input type="submit"
+								<input type="hidden" name="menuItemParam" value="${menuItem.url}" /> <input type="submit"
 									name="${menuItem.url}" value="${menuItem.name}" />
 							</form>
 						</TD>
@@ -62,8 +61,7 @@
 			</TABLE>
 			<br />
 			<form method="post" action="" name="countryForm">
-				<select id="countryItem" name="countryItemParam"
-					onchange="this.form.submit()">
+				<select id="countryItem" name="countryItemParam" onchange="this.form.submit()">
 					<c:forEach var="countryItem" items="${countryItemsList}">
 						<option value="<c:out value="${countryItem.code}" />">
 							<c:out	value="${countryItem.name}" />

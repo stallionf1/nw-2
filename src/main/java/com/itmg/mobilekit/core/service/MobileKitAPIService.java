@@ -43,13 +43,6 @@ public interface MobileKitAPIService {
 	 * */
 	List<NewsContentAO> listMainNews(String countryCode, String pageID, String fullContent, String remoteIp) throws MobileKitServiceException;
 	
-	/** 
-	 * @name:
-	 * @param:
-	 * @return: 
-	 * */
-	List<NewsContentAO> getDetailedNewsContent(String newsID, String remoteIp) throws MobileKitServiceException;
-	
 	Map<APITypes, Object> loadHomePageContent(String remoteIp) throws MobileKitServiceException;
 	
 	List<CategoryAO> loadCategoriesByCountry(String countryCode, String remoteIp) throws  MobileKitServiceException;

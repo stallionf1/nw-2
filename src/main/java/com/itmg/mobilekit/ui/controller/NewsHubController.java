@@ -191,25 +191,44 @@ public class NewsHubController {
 		}
 	}
 	
+	private String getCountryFromSession(HttpSession session) {
+		return (String)session.getAttribute(Config.getInstance().getSessionCountry());
+	}
+	
+	private void updateSessionCountry(String countryValue, HttpSession session) {
+		session.setAttribute(Config.getInstance().getSessionCountry(), countryValue);
+	}
+	
+	private void updateSessionCategory(String categoryValue, HttpSession session) {
+		session.setAttribute(Config.getInstance().getSessionCategory(), categoryValue);
+	}
+	
+	private String getCategoryFromSession(HttpSession session) {
+		return (String) session.getAttribute(Config.getInstance().getSessionCategory());
+	}
+	
 	@RequestMapping("/") 
 	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
 		
-		try {			
-			String countryFromRequest = req.getParameter("countryItemParam");
-			String menuFromRequest = req.getParameter("menuItemParam");
+		try {
+			HttpSession session = req.getSession();
 			
-			HttpSession session = req.getSession(true);
+			String searchCountry = "";
+			String sessionCountry = getCountryFromSession(req.getSession());
+			String requestCountry = req.getParameter("countryItemParam");
 			
-			if (countryFromRequest == null) {
-				countryFromRequest = "UA";
-				session.setAttribute(Config.getInstance().getSessionCountry(), countryFromRequest);
-			}
-			if (menuFromRequest != null) {
-				menuFromRequest = extractMenuNameFromUrl(menuFromRequest);
-				session.setAttribute(Config.getInstance().getSessionCategory(), menuFromRequest);
-			}
+			searchCountry = (requestCountry == null) ? sessionCountry : requestCountry;
+			updateSessionCountry(searchCountry, session);
 			
-			List<MenuItemAO> list = service.listMenuItems(countryFromRequest, req.getRemoteAddr());
+			
+			String searchCategory = "all"; //by default - all.
+			String sessionCategory = getCountryFromSession(req.getSession());
+			String requestCategory = req.getParameter("menuItemParam");
+			
+			searchCategory = (requestCategory != null) ? extractMenuNameFromUrl(requestCategory) : sessionCategory;
+			updateSessionCategory( searchCategory, session);
+						
+			List<MenuItemAO> list = service.listMenuItems(searchCountry, req.getRemoteAddr());
 			uiModel.addAttribute("menuItemsList", list);
 			uiModel.addAttribute("countryItemsList", service.listAllCountries(req.getRemoteAddr()));
 			
@@ -219,11 +238,15 @@ public class NewsHubController {
 				uiModel.addAttribute("weatherData", weather);
 			}
 			
+			
+			System.out.println("+++++++++++++++++++++");
+			System.out.println("--searchung by country:" + searchCountry + ", and category="+searchCategory);
+			
 			List<NewsContentAO> news = new ArrayList<NewsContentAO>();
-			if (menuFromRequest != null) {
-				news = service.loadNewsByMenuSectionAndCountry(menuFromRequest, countryFromRequest, req.getRemoteAddr(), "1", "NO");
+			if (requestCategory != null) {
+				news = service.loadNewsByMenuSectionAndCountry(requestCategory, searchCountry, req.getRemoteAddr(), "1", "NO");
 			} else {
-				 news = service.listMainNews(countryFromRequest, "1", "NO", req.getRemoteAddr());	
+				 news = service.listMainNews(searchCountry, "1", "NO", req.getRemoteAddr());	
 			}
 			uiModel.addAttribute("mainNewsList", news);
 			
@@ -319,7 +342,7 @@ public class NewsHubController {
 	public void scrollExample (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
 		String data = req.getParameter("data");
 		try {			
-			List<NewsContentAO> moreNewsList = service.listMainNews("ua", data, "NO", req.getRemoteAddr());
+			List<NewsContentAO> moreNewsList = service.listMainNews(getCountryFromSession(req.getSession()), data, "NO", req.getRemoteAddr());
 		
 			response.setContentType( "text/html" );
 			response.setCharacterEncoding( "UTF-8" );
@@ -368,6 +391,61 @@ public class NewsHubController {
 		catch (IOException e) {			
 			e.printStackTrace();
 		}	
+	}
+	
+	@RequestMapping("/load_previous_news")
+	public void loadPreviousNews (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		System.out.println("----------------- calling Load_previous_news");
+		
+		//TODO: create news data storage.
+		String currentNewsId = req.getParameter("currentNewsId");
+		System.out.println("------------ current news is=" +currentNewsId);
+		if (currentNewsId != null) {
+			List<NewsContentAO> currentSessionNews = (List<NewsContentAO>)req.getSession().getAttribute("mainNewsList");
+			for (NewsContentAO news : currentSessionNews) {
+				if (news.getNews_id().equals(currentNewsId)) {
+					int currentIndex = currentSessionNews.indexOf(news);
+					System.out.println("-- current index="+currentIndex);
+					int previousIndex = currentIndex-1;
+					System.out.println("-- previous index="+previousIndex);
+					
+					NewsContentAO previousNews = currentSessionNews.get(previousIndex);
+					System.out.println("---- previous news index = "+previousNews.getNews_id());
+					try {
+						NewsContentAO fullNewsContent = service.loadNewsDetails(previousNews.getNews_id(), "UA", req.getRemoteAddr());
+						
+						System.out.println("---- loaded full content NEWS =" + fullNewsContent);
+						response.setContentType( "text/html" );
+						response.setCharacterEncoding( "UTF-8" );
+						
+						PrintWriter out = response.getWriter();
+						
+						out.write("<img class=\"left\" width=\"140\" src="+fullNewsContent.getImg_src()+""
+								+ "alt="+fullNewsContent.getImg_alt()+" />"
+								+ "<span class=\"date block\">"+fullNewsContent.getDate_updated()+"</span>"
+								+ "<p><b>"+fullNewsContent.getNews_title()+"</b></p><p>"
+								+ "<span>"+fullNewsContent.getNews_content()+"</span></p>");
+						out.close();
+						
+						
+					} catch (MobileKitServiceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
+	@RequestMapping("/load_next_news")
+	public void loadNextNews (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		System.out.println("----------------- load_next_news");
+		
+		String data = req.getParameter("data");
+		System.out.println("--- data from request parameters:" + data);
 	}
 	
 	//Method for all forms.

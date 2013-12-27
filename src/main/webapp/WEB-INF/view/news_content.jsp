@@ -6,30 +6,51 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>NewsHub.org - News Content</title>
+
+<script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>	
+<script type="text/javascript">
+
+$(document).ready(function(){
+    $("#showPreviousNewsButton").click(function(){
+      $.ajax({
+        url: "load_previous_news",
+        type: "POST",
+        cache: true,
+        data: {currentNewsId: '${newsObject.news_id}'}, 
+        dataType: "html",
+        success: function(newsObject){   
+         	 $("#news_item").append("<b>Response</b>");         	
+       	 pageId++;
+        }
+      });
+    });
+});
+
+$(document).ready(function(){
+    $("#showNextNewsButton").click(function(){
+      $.ajax({
+        url: "load_next_news",
+        type: "POST",
+        cache: true,
+        data: {currentNewsId: '${newsObject.news_id}'}, 
+        dataType: "html",
+        success: function(newsObject){   
+       	 $("#news-item").html("<b>content changed! by NEXT</b>");
+       	 pageId++;
+        }
+      });
+    });
+});   
+
+</script>
 </head>
 <body>
-
 	<div id="container">		
-		<button onclick="window.history.go(-1)">Back</button>		
-		<div class="news-item">
+		<button onclick="window.history.go(-1)">Back</button>	
+			
+		<div id="news_item" class="news-item">
 		<br/>
-			<%-- <a href="<c:out value="${newsObject.news_url}" />" class="block left">
-				<img class="left" width="140"
-				src="<c:out value="${newsObject.img_src}" />"
-				alt="<c:out value="${newsObject.img_alt}" />" />
-			</a> 
-			
-			<span class="date block"> <c:out value="${newsObject.date_updated}" /></span>
-			
-			 <a href="<c:out value="${newsObject.news_url}" />" class="news-title block"> 
-			 	<c:out value="${newsObject.news_title}" />
-			</a>
-			<p>
-				<span><c:out value="${newsObject.news_content}" /></span>
-			</p> --%>
-			
-			 
-			<img class="left" width="140" src="<c:out value="${newsObject.img_src}" />"
+		<img class="left" width="140" src="<c:out value="${newsObject.img_src}" />"
 				alt="<c:out value="${newsObject.img_alt}" />" />
 			
 			<span class="date block"> <c:out value="${newsObject.date_updated}" /></span>
@@ -40,6 +61,15 @@
 			<p>
 				<span><c:out value="${newsObject.news_content}" /></span>
 			</p>
+		</div>
+		<div id="controls">
+			<%
+				//int index = Integer.valueOf(request.getParameter("page_index"));
+				if (1> 0) {
+			%>
+				<button id="showPreviousNewsButton">previous</button>
+			<% } %>
+			<button id="showNextNewsButton">next</button>				
 		</div>
 	</div>
 </body>

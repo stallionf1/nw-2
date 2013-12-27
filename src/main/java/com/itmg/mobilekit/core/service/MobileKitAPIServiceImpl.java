@@ -142,13 +142,6 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		}	
 	}
 
-	@Deprecated
-	@Override
-	public List<NewsContentAO> getDetailedNewsContent(String newsID, String remoteIp)throws MobileKitServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public List<CategoryAO> loadCategoriesByCountry(String countryCode, String remoteIp) throws MobileKitServiceException {
 	
