@@ -271,14 +271,7 @@ public class NewsHubController {
 		}
 		return "mobile_index";
 	}
-	
-	private boolean userHasChangedCountry(String sessionCountry, String requestCountry) {	
-		if (requestCountry != null) {
-			
-		}
-		return !sessionCountry.equals(requestCountry) ;
-	}
-
+	 
 	private String getSessionCountry(HttpSession session) {
 		Object res = session.getAttribute(Config.getInstance().getSessionCountry());
 		return res != null ? (String)res : "ua";
@@ -295,9 +288,9 @@ public class NewsHubController {
 	}
 	
 	@RequestMapping("/{news_url}")
-	public String showNewsContentDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+	public String loadNewsDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {
 		
-		NewsContentAO newsAo = findNewsById(news_url, req.getSession());
+		NewsContentAO newsAo = findNewsByIdOrUrl(news_url, req.getSession());
 		HttpSession session = req.getSession();
 		
 		if (newsAo.isParsed()) {		
@@ -354,7 +347,6 @@ public class NewsHubController {
 		String pageId = req.getParameter("data");
 		try {			
 			HttpSession session = req.getSession();
-			
 			List<NewsContentAO> searched = service.searchNewsBy(
 					(String)session.getAttribute("searchParam"),
 					getCountryFromSession(session), 
@@ -395,7 +387,7 @@ public class NewsHubController {
 		return "NOT_FOUND"; //dummy paramenter.
 	}
 	
-	private NewsContentAO findNewsById(String urlOrId, HttpSession session) {
+	private NewsContentAO findNewsByIdOrUrl(String urlOrId, HttpSession session) {
 		if (session.getAttribute("mainNewsList") != null) {
 			List<NewsContentAO> news = (List<NewsContentAO>) session.getAttribute("mainNewsList");
 			for (NewsContentAO element : news) {
@@ -499,12 +491,14 @@ public class NewsHubController {
 	
 	private void showNextOrPreviousNews(boolean ifNext, HttpServletRequest req, HttpServletResponse response) {
 		HttpSession session = req.getSession();		
-		String currentNewsId = (String)session.getAttribute("currentNewsId");
+		String currentNewsId = getCurrentNewsIdFromSession(session);
+		logger.debug(String.format("Got news id=%s for getting %s news.", currentNewsId, ifNext ? "NEXT" : "PREVIOUS"));
 		
 		if (currentNewsId != null) {
-			List<NewsContentAO> currentSessionNews = (List<NewsContentAO>) req.getSession().getAttribute("mainNewsList");
+			List<NewsContentAO> currentSessionNews = extractMainNewsFromSession(req);
 
 			int currentNewsIndex = findNewsIndexById(currentNewsId, currentSessionNews);
+			logger.debug(String.format("Found news_id for id=%s, at index: %s", currentNewsId, currentNewsIndex));
 			
 			int nextNewsIndex = -1;
 			
@@ -515,18 +509,31 @@ public class NewsHubController {
 			}
 			
 			try {
+				NewsContentAO possibleNextNews = currentSessionNews.get(nextNewsIndex);
+				if (!possibleNextNews.isParsed()) {
+					printNewsToResponse(possibleNextNews, req, response);	
+				} else {
 				String nextNewsId = currentSessionNews.get(nextNewsIndex).getNews_id();
-				
 				NewsContentAO fullNewsContent = service.loadNewsDetails(
 						nextNewsId, getCountryFromSession(req.getSession()),
 						req.getRemoteAddr());
 				printNewsToResponse(fullNewsContent, req, response);
+				}
 			} catch (MobileKitServiceException e) {
 				logger.error("Failed to execute LoadNextNews.", e);				
 			} catch (IOException e) {
 				logger.error("Failed to write NewsContetnAO to response.", e);
 			}
 		}
+	}
+
+	private String getCurrentNewsIdFromSession(HttpSession session) {
+		return (String)session.getAttribute("currentNewsId");
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<NewsContentAO> extractMainNewsFromSession(HttpServletRequest req) {
+		return (List<NewsContentAO>) req.getSession().getAttribute("mainNewsList");
 	}
 	
 	private void printNewsToResponse(NewsContentAO fullNewsContent, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -544,8 +551,11 @@ public class NewsHubController {
 				+ "<p><b>" + fullNewsContent.getNews_title()
 				+ "</b></p><p>" + "<span>"
 				+ fullNewsContent.getNews_content() + "</span></p>");
-		out.write("<input type=\"hidden\" name=\"newsId\" value="
-				+ fullNewsContent.getNews_id() + "/>");
+		if (!fullNewsContent.isParsed()) {
+			out.write("<a href="+fullNewsContent.getNews_url() +">read more</a>");
+		}
+		
+		out.write("<input type=\"hidden\" name=\"newsId\" value="+ fullNewsContent.getNews_id() + "/>");
 		out.close();
 
 		request.getSession().setAttribute("currentNewsId", fullNewsContent.getNews_id());

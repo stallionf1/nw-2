@@ -1,8 +1,5 @@
 package com.itmg.mobilekit.core.common;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.apache.log4j.Logger;
 
 import com.itmg.mobilekit.core.storage.NewsHubContentStorage;
@@ -11,7 +8,7 @@ public class NewsUpdaterImpl implements NewsUpdater {
 	
 	//TODO: init with spring.
 	private NewsHubContentStorage newsHubContentStorage;
-	private Timer timer;
+	//private Timer timer;
 	
 	private static final Logger logger = Logger.getLogger(NewsUpdaterImpl.class);
 	
@@ -32,13 +29,13 @@ public class NewsUpdaterImpl implements NewsUpdater {
 	
 	@Override
 	public void stopUpdating() {
-		if (timer != null) {
-			timer.cancel();
-		}	
+//		if (timer != null) {
+//			timer.cancel();
+//		}	
 	}
 	
 	private void updateNewsContent() {
-		logger.info("Start updating news conent.");
+		//logger.info("Start updating news conent.");
 		//System.out.println("--- start updating news content ---- ");
 		//newsHubContentStorage.updateNewsHubContent();
 	}

@@ -231,6 +231,11 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	public WeatherData loadWeatherData(String locationIp) throws MobileKitServiceException {
 		logger.debug(String.format("Start loading weather data for IP=%s", locationIp));
  
+		
+		if (locationIp.equals("127.0.0.1") || locationIp.equals("0:0:0:0:0:0:0:1%0")) {
+			locationIp = "176.106.1.193";
+		}
+		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HeaderHttpGet get = new HeaderHttpGet(
 				String.format("%s%s", Config.getInstance().getWeatherHost(), Config.getInstance().getWeatherAPI()), locationIp);
@@ -329,7 +334,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		try {			
 			HttpURLConnection con = (HttpURLConnection) (new URL(Config.getInstance().getLocale_host())).openConnection();
 			con.setInstanceFollowRedirects(false);
-			if (usersIp.equals("127.0.0.1")) {
+			if (usersIp.equals("127.0.0.1") || usersIp.equals("0:0:0:0:0:0:0:1%0")) {
 				usersIp = "176.106.1.193";
 			}
 			con.addRequestProperty(Config.getInstance().getForwardHeader(), usersIp);
