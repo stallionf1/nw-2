@@ -5,6 +5,28 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Search</title>
+
+<!--JQUERY-->
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>	
+
+  <script type="text/javascript">
+  var pageId = 2;
+  $(document).ready(function(){
+     $("#loadMoreButton").click(function(){
+       $.ajax({
+         url: "load_more_search_results",
+         type: "GET",
+         cache:true,
+         data: {data:pageId}, 
+         dataType:"html",
+         success: function(newsObject){   
+          	 $("#searched_news").append(newsObject);
+        	 pageId++;
+         }
+       });
+     });
+    });
+  </script>
  
 </head>
 <body>
@@ -26,37 +48,37 @@
         </form>
     </div>
    <br/>
-		<div class="news">
+		<div id="searched_news" class="news">
 				<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">
 
 					<p>parsed="${newsObject.parsed}"</p>
 					<p>parsed="${newsObject.news_id}"</p>
 
-<a href="			
-	<c:choose>
-      <c:when test="${newsObject.parsed == true}">
-      	<c:out value="${newsObject.short_url}" />
-      </c:when>
-      <c:otherwise>
-      	<c:out value="${newsObject.news_url}" />      
-      </c:otherwise>
-	</c:choose>"
+				<a href="			
+					<c:choose>
+				      <c:when test="${newsObject.parsed == true}">
+				      	<c:out value="${newsObject.short_url}" />
+				      </c:when>
+				      <c:otherwise>
+				      	<c:out value="${newsObject.news_url}" />      
+				      </c:otherwise>
+					</c:choose>"
 						class="block left"> <img class="left" width="140"
 						src="<c:out value="${newsObject.img_src}" />"
 						alt="<c:out value="${newsObject.img_alt}" />" />
 					</a> <span class="date block"> <c:out
 							value="${newsObject.date_updated}" /></span>
 							
-<a href="			
-	<c:choose>
-      <c:when test="${newsObject.parsed == true}">
-      	<c:out value="${newsObject.short_url}" />
-      </c:when>
-      <c:otherwise>
-      	<c:out value="${newsObject.news_url}" />      
-      </c:otherwise>
-	</c:choose>"
+					<a href="			
+						<c:choose>
+					      <c:when test="${newsObject.parsed == true}">
+					      	<c:out value="${newsObject.short_url}" />
+					      </c:when>
+					      <c:otherwise>
+					      	<c:out value="${newsObject.news_url}" />      
+					      </c:otherwise>
+						</c:choose>"
 						class="news-title block"> <c:out
 							value="${newsObject.news_title}" />
 					</a>
@@ -66,8 +88,15 @@
 
 				</div>
 			</c:forEach>
-
 		</div>
+		<c:choose>
+			<c:when test="${mainNewsList.size() > 2}">
+				<button id="loadMoreButton">Show more results</button>
+				<div id="moreSearchResults">
+				</div>
+			</c:when>
+		</c:choose>
+		
 	</div>
 </body>
 </html>

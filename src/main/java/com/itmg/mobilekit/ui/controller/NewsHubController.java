@@ -308,12 +308,49 @@ public class NewsHubController {
 			
 			HttpSession session = req.getSession();
 			session.setAttribute("mainNewsList", searched);
+			session.setAttribute("searchParam", req.getParameter("searchParam"));
 			
 		} catch (MobileKitServiceException e) {
-			//e.printStackTrace();
+			logger.error("Failed to do search.", e);
+			return "some_error_page";
 		}
 		return "search_results";
 	}
+	
+	@RequestMapping("/load_more_search_results")
+	public void loadMoreSearchresults(HttpServletRequest req, HttpServletResponse response) {
+		String pageId = req.getParameter("data");
+		try {
+			
+			HttpSession session = req.getSession();
+			
+			List<NewsContentAO> searched = service.searchNewsBy(
+					(String)session.getAttribute("searchParam"),
+					getCountryFromSession(session), 
+					req.getParameter("categoryCode"), pageId, req.getRemoteAddr());
+			
+			List<NewsContentAO> sessionNnews = (List<NewsContentAO>)session.getAttribute("mainNewsList");
+			
+			sessionNnews.addAll(searched);
+			session.setAttribute("mainNewsList", sessionNnews);
+			
+			response.setContentType( "text/html" );
+			response.setCharacterEncoding( "UTF-8" );
+			
+			PrintWriter out = response.getWriter();
+			for (NewsContentAO item : searched) {
+				writeNewsObject(item, out);
+			}
+			out.close();
+			
+		} catch (MobileKitServiceException e) {
+			logger.error("Failed to do search.", e);
+			
+		} catch (IOException e) {
+			logger.error("Failed oto write out response fro search next page.", e);
+		}		
+	}
+	
 	
 	private String findNewsId(String url, HttpSession session) {
 		if (session.getAttribute("mainNewsList") != null) {
@@ -342,7 +379,7 @@ public class NewsHubController {
 	}
 	
 	@RequestMapping("/load_more_news")
-	public void scrollExample (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+	public void loadMoreNews (HttpServletRequest req, HttpServletResponse response) {
 		String data = req.getParameter("data");
 		try {
 			
@@ -367,44 +404,44 @@ public class NewsHubController {
 			sessioNnews.addAll(moreNewsList);
 			session.setAttribute("mainNewsList", sessioNnews);
 			
-			for (NewsContentAO item : moreNewsList) {
-
-				out.write("<div class=\"news-item\">");
-				if (item.isParsed()) {
-					out.write("<a href=" + item.getShort_url() + "class=\"block left\"><img class=\"left\" width=\"140\" src="
-							+ item.getImg_src() + " alt=" + item.getImg_alt()
-							+ "/></a>");
-				} else {
-					out.write("<a href=" + item.getNews_url() + "class=\"block left\"><img class=\"left\" width=\"140\" src="
-							+ item.getImg_src() + " alt=" + item.getImg_alt()
-							+ "/></a>");
-				}
-			
-				out.write("<span class=\"date block\">"+item.getDate_updated()+" </span>");
-				
-				if (item.isParsed()) {
-					out.write("<a href=" + item.getShort_url() + " class=\"news-title block\">"
-							+ item.getNews_title() + "</a>");
-				} else {
-					out.write("<a href=" + item.getNews_url() + " class=\"news-title block\">"
-							+ item.getNews_title() + "</a>");
-				}
-			
-				out.write("<p>");
-				out.write("<span>" + item.getNews_content() + "</span>");
-				out.write("</p>");
-				
-				out.write("</div>");
-			
-			}
-			
+			for (NewsContentAO item : moreNewsList) {				
+				writeNewsObject(item, out);
+			}			
 			out.close();
 		} catch (MobileKitServiceException e1) {			
-			e1.printStackTrace();
+			logger.error("Failed to load more news.", e1);
 		}		
 		catch (IOException e) {			
-			e.printStackTrace();
+			logger.error("Failed to write out response for LoadMoreNews.", e);
 		}	
+	}
+	
+	private void writeNewsObject(NewsContentAO item, PrintWriter out) {
+		out.write("<div class=\"news-item\">");
+		if (item.isParsed()) {
+			out.write("<a href=" + item.getShort_url() + "class=\"block left\"><img class=\"left\" width=\"140\" src="
+					+ item.getImg_src() + " alt=" + item.getImg_alt()
+					+ "/></a>");
+		} else {
+			out.write("<a href=" + item.getNews_url() + "class=\"block left\"><img class=\"left\" width=\"140\" src="
+					+ item.getImg_src() + " alt=" + item.getImg_alt()
+					+ "/></a>");
+		}
+	
+		out.write("<span class=\"date block\">"+item.getDate_updated()+" </span>");
+		
+		if (item.isParsed()) {
+			out.write("<a href=" + item.getShort_url() + " class=\"news-title block\">"
+					+ item.getNews_title() + "</a>");
+		} else {
+			out.write("<a href=" + item.getNews_url() + " class=\"news-title block\">"
+					+ item.getNews_title() + "</a>");
+		}
+	
+		out.write("<p>");
+		out.write("<span>" + item.getNews_content() + "</span>");
+		out.write("</p>");				
+		out.write("</div>");	
 	}
 	
 	@RequestMapping("/load_previous_news")
