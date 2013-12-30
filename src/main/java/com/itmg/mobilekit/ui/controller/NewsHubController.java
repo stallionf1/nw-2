@@ -227,14 +227,9 @@ public class NewsHubController {
 				searchCategory = (requestCategory != null) ? extractMenuNameFromUrl(requestCategory) : sessionCategory;
 			}
 			
-//			if (userHasChangedCountry(sessionCountry, requestCountry)) {
-//				logger.debug("User has changed country. Reset category to default");
-//				searchCategory = "all";
-//			}
 			if (requestCountry != null) {
 				//user is changing country. Reset category
 				searchCategory = "all";
-				
 			}
 			
 			updateSessionCategory( searchCategory, session);
@@ -316,16 +311,19 @@ public class NewsHubController {
 	public String searchNews(Model uiModel, HttpServletRequest req, HttpServletResponse response) {
 		
 		try {
+			
+			String searchParam = cleanSearchKeyword(req.getParameter("searchParam"));
+			
 			List<NewsContentAO> searched = service.searchNewsBy(
-					req.getParameter("searchParam"),
-					(String)req.getSession().getAttribute(Config.getInstance().getSessionCountry()), 
+					searchParam,
+					getSessionCountry(req.getSession()), 
 					req.getParameter("categoryCode"), "1", req.getRemoteAddr());
 			
 			uiModel.addAttribute("mainNewsList", searched);
 			
 			HttpSession session = req.getSession();
 			session.setAttribute("mainNewsList", searched);
-			session.setAttribute("searchParam", req.getParameter("searchParam"));
+			session.setAttribute("searchParam", searchParam);
 			
 		} catch (MobileKitServiceException e) {
 			logger.error("Failed to do search.", e);
@@ -334,11 +332,17 @@ public class NewsHubController {
 		return "search_results";
 	}
 	
+	private String cleanSearchKeyword(String keyword) {		
+		return (keyword == null ) ? "" : keyword.trim()
+				.replaceAll(" ", "%20")
+				.replaceAll("\"", "")
+				.replaceAll("'", "");				
+	}
+	
 	@RequestMapping("/load_more_search_results")
 	public void loadMoreSearchresults(HttpServletRequest req, HttpServletResponse response) {
 		String pageId = req.getParameter("data");
-		try {
-			
+		try {			
 			HttpSession session = req.getSession();
 			
 			List<NewsContentAO> searched = service.searchNewsBy(
