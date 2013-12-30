@@ -59,6 +59,11 @@ $(document).ready(function(){
 			<p>
 				<span><c:out value="${newsObject.news_content}" /></span>
 			</p>
+
+			<c:if test="${!newsObject.parsed}">
+				<a href="${newsObject.news_url}"> read more</a>
+			</c:if>
+
 		</div>
 		
 		<div id="controls">

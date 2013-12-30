@@ -99,8 +99,10 @@
 									class="block left"> <img class="left" width="140"
 									src="<c:out value="${newsObject.img_src}" />"
 									alt="<c:out value="${newsObject.img_alt}" />" />
-								</a> <span class="date block"> <c:out
-										value="${newsObject.date_updated}" /></span>
+								</a> 
+								<span class="date block"> 
+									<c:out value="${newsObject.date_updated}" />
+								</span>
 										
 								<a href="			
 									<c:choose>
@@ -108,15 +110,18 @@
 								      	<c:out value="${newsObject.short_url}" />
 								      </c:when>
 								      <c:otherwise>
-								      	<c:out value="${newsObject.news_url}" />      
+								      
+								      	<%-- <c:out value="${newsObject.news_url}" />
+								      	 --%>      
+								      	 <c:out value="${newsObject.news_id}" />
 								      </c:otherwise>
 									</c:choose>"
-									class="news-title block"> <c:out
-										value="${newsObject.news_title}" />
+									class="news-title block"> 
+									<c:out value="${newsObject.news_title}"/>
 								</a>
 								<p>
 									<span><c:out value="${newsObject.news_content}" /></span>
-								</p>
+								</p>								
 						</c:forEach>			
 				</div>
 			</c:when>
@@ -126,41 +131,41 @@
 			<p>NEWS</p>
 			<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">
-
-<a href="			
-	<c:choose>
-      <c:when test="${newsObject.parsed == true}">
-      	<c:out value="${newsObject.short_url}" />
-      </c:when>
-      <c:otherwise>
-      	<c:out value="${newsObject.news_url}" />      
-      </c:otherwise>
-	</c:choose>"
-						class="block left"> <img class="left" width="140"
-						src="<c:out value="${newsObject.img_src}" />"
-						alt="<c:out value="${newsObject.img_alt}" />" />
-					</a> <span class="date block"> <c:out
-							value="${newsObject.date_updated}" /></span>
-							
-<a href="			
-	<c:choose>
-      <c:when test="${newsObject.parsed == true}">
-      	<c:out value="${newsObject.short_url}" />
-      </c:when>
-      <c:otherwise>
-      	<c:out value="${newsObject.news_url}" />      
-      </c:otherwise>
-	</c:choose>"
-						class="news-title block"> <c:out
-							value="${newsObject.news_title}" />
+					<a href="			
+						<c:choose>
+					      <c:when test="${newsObject.parsed == true}">
+					      	<c:out value="${newsObject.short_url}" />
+					      </c:when>
+					      <c:otherwise>
+					      	<c:out value="${newsObject.news_url}" />      
+					      </c:otherwise>
+						</c:choose>"
+											class="block left"> <img class="left" width="140"
+											src="<c:out value="${newsObject.img_src}" />"
+											alt="<c:out value="${newsObject.img_alt}" />" />
+										</a> <span class="date block"> <c:out
+												value="${newsObject.date_updated}" /></span>
+												
+					<a href="			
+						<c:choose>
+					      <c:when test="${newsObject.parsed == true}">
+					      	<c:out value="${newsObject.short_url}" />
+					      </c:when>
+					      <c:otherwise>					      
+					      	<%-- <c:out value="${newsObject.news_url}" />
+					      	 --%>
+					      	       <c:out value="${newsObject.news_id}" />
+					      </c:otherwise>
+						</c:choose>"
+						class="news-title block"> 
+						<c:out value="${newsObject.news_title}" />
 					</a>
 					<p>
 						<span><c:out value="${newsObject.news_content}" /></span>
 					</p>
 
-				</div>
+				</div>							
 			</c:forEach>
-
 		</div>
 	</div>
 	

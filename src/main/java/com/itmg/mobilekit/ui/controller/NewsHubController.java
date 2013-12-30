@@ -3,6 +3,7 @@ package com.itmg.mobilekit.ui.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -295,21 +296,28 @@ public class NewsHubController {
 	
 	@RequestMapping("/{news_url}")
 	public String showNewsContentDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {
-		try {
-		 
-			String testId = findNewsId(news_url, req.getSession());
-			uiModel.addAttribute("currentNewsId", testId);
-			
-			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
-			uiModel.addAttribute("newsObject", newsContent);
-			
-			HttpSession session = req.getSession();
-			session.setAttribute("currentNewsId", newsContent.getNews_id());
-			return "news_content";
-		} catch (MobileKitServiceException e) {
-			e.printStackTrace();
+		
+		NewsContentAO newsAo = findNewsById(news_url, req.getSession());
+		HttpSession session = req.getSession();
+		
+		if (newsAo.isParsed()) {		
+			try {
+				logger.debug(String.format("Loading news details for news_id=", newsAo.getNews_id()));
+				uiModel.addAttribute("currentNewsId", newsAo.getNews_id());
+				
+				NewsContentAO newsContent = service.loadNewsDetails(newsAo.getNews_id(), getCountryFromSession(req.getSession()), req.getRemoteAddr());
+		
+				uiModel.addAttribute("newsObject", newsContent);		
+				session.setAttribute("currentNewsId", newsContent.getNews_id());
+				
+			} catch (MobileKitServiceException e) {
+				logger.error(String.format("Failed to get news details for news_id=%s",  newsAo.getNews_id()), e);
+			}
+		} else {
+			uiModel.addAttribute("newsObject", newsAo);		
+			session.setAttribute("currentNewsId", newsAo.getNews_id());
 		}
-		return "news_content";		
+		return "news_content";				
 	}
 	
 	@RequestMapping("/search")
@@ -375,16 +383,28 @@ public class NewsHubController {
 	}
 	
 	
-	private String findNewsId(String url, HttpSession session) {
+	private String findNewsId(String urlOrId, HttpSession session) {
 		if (session.getAttribute("mainNewsList") != null) {
 			List<NewsContentAO> news = (List<NewsContentAO>) session.getAttribute("mainNewsList");
 			for (NewsContentAO element : news) {
-				if (element.getNews_url().contains(url)) {
+				if (element.getNews_url().contains(urlOrId) || element.getNews_id().equals(urlOrId)) {
 					return element.getNews_id();
 				}
 			}
 		}
 		return "NOT_FOUND"; //dummy paramenter.
+	}
+	
+	private NewsContentAO findNewsById(String urlOrId, HttpSession session) {
+		if (session.getAttribute("mainNewsList") != null) {
+			List<NewsContentAO> news = (List<NewsContentAO>) session.getAttribute("mainNewsList");
+			for (NewsContentAO element : news) {
+				if (element.getNews_url().contains(urlOrId) || element.getNews_id().equals(urlOrId)) {
+					return element;
+				}
+			}
+		}
+		return null; 
 	}
 
 	@RequestMapping("/tmp")
