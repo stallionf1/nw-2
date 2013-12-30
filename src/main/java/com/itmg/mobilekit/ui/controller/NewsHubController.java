@@ -302,6 +302,9 @@ public class NewsHubController {
 			
 			NewsContentAO newsContent = service.loadNewsDetails(testId, "UA", req.getRemoteAddr());
 			uiModel.addAttribute("newsObject", newsContent);
+			
+			HttpSession session = req.getSession();
+			session.setAttribute("currentNewsId", newsContent.getNews_id());
 			return "news_content";
 		} catch (MobileKitServiceException e) {
 			e.printStackTrace();
@@ -335,7 +338,7 @@ public class NewsHubController {
 	}
 	
 	private String cleanSearchKeyword(String keyword) {		
-		return (keyword == null) ? "" : keyword.trim().replaceAll("[!@#$%^&*()_+=|?]", "").replaceAll(" ", "%20"); 
+		return (keyword == null) ? "" : keyword.trim().replaceAll("[!@#$%^&*()_+=|?\"']", "").replaceAll(" ", "%20"); 
 	}
 	
 	@RequestMapping("/load_more_search_results")
@@ -466,62 +469,76 @@ public class NewsHubController {
 	
 	@RequestMapping("/load_previous_news")
 	public void loadPreviousNews (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		showNextOrPreviousNews(false, req, response);
+	}
 	
-		//TODO: create news data storage.
-		String currentNewsId = req.getParameter("data");
-		System.out.println("------------ current news is=" +currentNewsId);
-		
+	@RequestMapping("/load_next_news")
+	public void loadNextNews(Model uiModel, HttpServletRequest req, HttpServletResponse response) {
+		showNextOrPreviousNews(true, req, response);
+	}
+	
+	private void showNextOrPreviousNews(boolean ifNext, HttpServletRequest req, HttpServletResponse response) {
+		HttpSession session = req.getSession();		
+		String currentNewsId = (String)session.getAttribute("currentNewsId");
 		
 		if (currentNewsId != null) {
-			List<NewsContentAO> currentSessionNews = (List<NewsContentAO>)req.getSession().getAttribute("mainNewsList");
-			for (NewsContentAO news : currentSessionNews) {
-				if (news.getNews_id().equals(currentNewsId)) {
-					int currentIndex = currentSessionNews.indexOf(news);
-					System.out.println("-- current index="+currentIndex);
-					int previousIndex = currentIndex-1;
-					System.out.println("-- previous index="+previousIndex);
-					
-					NewsContentAO previousNews = currentSessionNews.get(previousIndex);
-					System.out.println("---- previous news index = "+previousNews.getNews_id());
-					try {
-						NewsContentAO fullNewsContent = service.loadNewsDetails(previousNews.getNews_id(), "UA", req.getRemoteAddr());
-						
-						System.out.println("---- loaded full content NEWS =" + fullNewsContent);
-						response.setContentType( "text/html" );
-						response.setCharacterEncoding( "UTF-8" );
-						
-						PrintWriter out = response.getWriter();
-						
-						out.write("<img class=\"left\" width=\"140\" src="+fullNewsContent.getImg_src()+""
-								+ "alt="+fullNewsContent.getImg_alt()+" />"
-								+ "<span class=\"date block\">"+fullNewsContent.getDate_updated()+"</span>"
-								+ "<p><b>"+fullNewsContent.getNews_title()+"</b></p><p>"
-								+ "<span>"+fullNewsContent.getNews_content()+"</span></p>");
-						out.write("<input type=\"hidden\" name=\"newsId\" value="+fullNewsContent.getNews_id()+"/>");
-						out.close();
-						
-						
-						uiModel.addAttribute("currentNewsId", fullNewsContent.getNews_id());
-						
-					} catch (MobileKitServiceException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			List<NewsContentAO> currentSessionNews = (List<NewsContentAO>) req.getSession().getAttribute("mainNewsList");
+
+			int currentNewsIndex = findNewsIndexById(currentNewsId, currentSessionNews);
+			
+			int nextNewsIndex = -1;
+			
+			if (currentNewsIndex == currentSessionNews.size()) {//Position of last news.
+				// Need to load next page with news.				
+			} else {
+				nextNewsIndex = ifNext ? currentNewsIndex + 1 : currentNewsIndex - 1;
+			}
+			
+			try {
+				String nextNewsId = currentSessionNews.get(nextNewsIndex).getNews_id();
+				
+				NewsContentAO fullNewsContent = service.loadNewsDetails(
+						nextNewsId, getCountryFromSession(req.getSession()),
+						req.getRemoteAddr());
+				printNewsToResponse(fullNewsContent, req, response);
+			} catch (MobileKitServiceException e) {
+				logger.error("Failed to execute LoadNextNews.", e);				
+			} catch (IOException e) {
+				logger.error("Failed to write NewsContetnAO to response.", e);
 			}
 		}
 	}
 	
-	@RequestMapping("/load_next_news")
-	public void loadNextNews (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
-		System.out.println("----------------- load_next_news");
+	private void printNewsToResponse(NewsContentAO fullNewsContent, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		String data = req.getParameter("data");
-		System.out.println("--- data from request parameters:" + data);
+		response.setContentType("text/html");
+		response.setCharacterEncoding("UTF-8");
+
+		PrintWriter out = response.getWriter();
+
+		out.write("<img class=\"left\" width=\"140\" src="
+				+ fullNewsContent.getImg_src() + "" + "alt="
+				+ fullNewsContent.getImg_alt() + " />"
+				+ "<span class=\"date block\">"
+				+ fullNewsContent.getDate_updated() + "</span>"
+				+ "<p><b>" + fullNewsContent.getNews_title()
+				+ "</b></p><p>" + "<span>"
+				+ fullNewsContent.getNews_content() + "</span></p>");
+		out.write("<input type=\"hidden\" name=\"newsId\" value="
+				+ fullNewsContent.getNews_id() + "/>");
+		out.close();
+
+		request.getSession().setAttribute("currentNewsId", fullNewsContent.getNews_id());
 	}
+	
+	private int findNewsIndexById(String currentNewsId, List<NewsContentAO> currentSessionNews) {		
+		for (NewsContentAO item : currentSessionNews) {
+			if (item.getNews_id().equals(currentNewsId)) {
+				return currentSessionNews.indexOf(item);
+			}
+		}
+		return -1;
+	}	
 	
 	//Method for all forms.
 	@ModelAttribute("menuItem")

@@ -11,32 +11,30 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
-    $("#showPreviousNewsButton").click(function(){
+	
+    $("#show_next_button").click(function(){
       $.ajax({
-        url: "load_previous_news",
+        url: "load_next_news",
         type: "POST",
-        cache: true,
-        data: {data: '${currentNewsId}'}, 
+        cache: false,     
         dataType: "html",
         success: function(newsObject){   
-         	 $("#news_item").html(newsObject);         	
-       	 pageId++;
+         	 $("#news_item").html(newsObject);
         }
       });
     });
 });
 
 $(document).ready(function(){
-    $("#showNextNewsButton").click(function(){
+    $("#show_previous_button").click(function(){
       $.ajax({
-        url: "load_next_news",
+        url: "load_previous_news",
         type: "GET",
         cache: true,
         data: {currentNewsId: '${newsObject.news_id}'}, 
         dataType: "html",
         success: function(newsObject){   
-       	 $("#news_item").html("<b>content changed! by NEXT</b>");
-       	 pageId++;
+       	 $("#news_item").html(newsObject);
         }
       });
     });
@@ -68,9 +66,9 @@ $(document).ready(function(){
 				//int index = Integer.valueOf(request.getParameter("page_index"));
 				if (1> 0) {
 			%>
-				<button id="showPreviousNewsButton">previous</button>
+				<button id="show_previous_button">previous</button>
 			<% } %>
-			<button id="showNextNewsButton">next</button>				
+			<button id="show_next_button">next</button>				
 		</div>
 	</div>
 </body>
