@@ -344,15 +344,20 @@ public class NewsHubController {
 		String data = req.getParameter("data");
 		try {
 			
+			HttpSession session = req.getSession();
 			
+			String searchCountry = getCountryFromSession(req.getSession());					
+			String searchCategory = getCategoryFromSession(session);
 			
-			List<NewsContentAO> moreNewsList = service.listMainNews(getCountryFromSession(req.getSession()), data, "NO", req.getRemoteAddr());
+			List<NewsContentAO> moreNewsList = service.loadNewsByMenuSectionAndCountry(
+					searchCategory, searchCountry, req.getRemoteAddr(), data, "NO");
+			
+			//List<NewsContentAO> moreNewsList = service.listMainNews(getCountryFromSession(req.getSession()), data, "NO", req.getRemoteAddr());
 		
 			response.setContentType( "text/html" );
 			response.setCharacterEncoding( "UTF-8" );
 			PrintWriter out = response.getWriter();
 			
-			HttpSession session = req.getSession();
 			List<NewsContentAO> sessioNnews = (List<NewsContentAO>)session.getAttribute("mainNewsList");
 			
 			sessioNnews.addAll(moreNewsList);

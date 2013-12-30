@@ -543,7 +543,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	private String getMenuNewsUrl(String menuName, String countryCode, String fullContent, String pageId) {
-		String url = String.format("%s%s%s%s&countryCode=%s&fullContent=%s&menuItem=%s&pageId=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+		String url = String.format("%s%s%s%s&countryCode=%s&fullContent=%s&menuItem=%s&pageID=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
 				"/listNewsByMenuItem?", Config.getInstance().getToken(), countryCode, fullContent, menuName, pageId);
 		return url;
 	}
