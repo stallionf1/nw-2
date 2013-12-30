@@ -87,14 +87,14 @@
 		<!-- Move it to separate jsp page for showing NewsContent -->
 			<c:forEach var="newsObject" items="${topNews}">
 		<a href="			
-	<c:choose>
-      <c:when test="${newsObject.parsed == true}">
-      	<c:out value="${newsObject.short_url}" />
-      </c:when>
-      <c:otherwise>
-      	<c:out value="${newsObject.news_url}" />      
-      </c:otherwise>
-	</c:choose>"
+					<c:choose>
+				      <c:when test="${newsObject.parsed == true}">
+				      	<c:out value="${newsObject.short_url}" />
+				      </c:when>
+				      <c:otherwise>
+				      	<c:out value="${newsObject.news_url}" />      
+				      </c:otherwise>
+					</c:choose>"
 						class="block left"> <img class="left" width="140"
 						src="<c:out value="${newsObject.img_src}" />"
 						alt="<c:out value="${newsObject.img_alt}" />" />

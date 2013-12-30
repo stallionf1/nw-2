@@ -206,12 +206,10 @@ public class NewsHubController {
 	}
 	
 	@RequestMapping("/") 
-	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
+	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) {
 		
-		try {
-			
-			HttpSession session = req.getSession();
-			
+		try {			
+			HttpSession session = req.getSession();			
 			String searchCountry = "";
 			String sessionCountry = getCountryFromSession(req.getSession());
 			String requestCountry = req.getParameter("countryItemParam");
@@ -248,15 +246,19 @@ public class NewsHubController {
 			} else {
 				 news = service.listMainNews(searchCountry, "1", "NO", req.getRemoteAddr());	
 			}
-			uiModel.addAttribute("mainNewsList", news);
+			uiModel.addAttribute("mainNewsList", news);  
 			
 			List<NewsContentAO> topNews = service.getTopNews(getSessionCountry(session), req.getRemoteAddr());
 			uiModel.addAttribute("topNews", topNews);
-			news.addAll(topNews);
-			session.setAttribute("mainNewsList", news);
+			
+			List<NewsContentAO> sessionNews= new ArrayList<NewsContentAO>(news);
+			sessionNews.addAll(topNews);
+			
+			
+			session.setAttribute("mainNewsList", sessionNews);
 			
 		} catch (MobileKitServiceException e) {
-			e.printStackTrace();
+			logger.fatal("Failed to get data fro main page!", e);
 			return "some_error_page";
 		}
 		return "mobile_index";
@@ -349,11 +351,13 @@ public class NewsHubController {
 			String searchCountry = getCountryFromSession(req.getSession());					
 			String searchCategory = getCategoryFromSession(session);
 			
-			List<NewsContentAO> moreNewsList = service.loadNewsByMenuSectionAndCountry(
-					searchCategory, searchCountry, req.getRemoteAddr(), data, "NO");
+			List<NewsContentAO> moreNewsList = new ArrayList<NewsContentAO>();
+			if (!searchCategory.equalsIgnoreCase("all")) {
+				moreNewsList = service.loadNewsByMenuSectionAndCountry(searchCategory, searchCountry, req.getRemoteAddr(), data, "NO");
+			} else {
+				moreNewsList = service.listMainNews(searchCountry, data, "NO", req.getRemoteAddr());	
+			}
 			
-			//List<NewsContentAO> moreNewsList = service.listMainNews(getCountryFromSession(req.getSession()), data, "NO", req.getRemoteAddr());
-		
 			response.setContentType( "text/html" );
 			response.setCharacterEncoding( "UTF-8" );
 			PrintWriter out = response.getWriter();
