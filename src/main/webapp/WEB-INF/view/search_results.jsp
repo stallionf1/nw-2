@@ -48,6 +48,11 @@
         </form>
     </div>
    <br/>
+   
+   <p>
+   	total found - ${mainNewsList.size()}.
+   </p>
+   
 		<div id="searched_news" class="news">
 				<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">			
@@ -87,9 +92,9 @@
 			</c:forEach>
 		</div>
 		<c:choose>
-			<c:when test="${mainNewsList.size() > 5}">
+			<c:when test="${mainNewsList.size() > 4}">
 				<button id="loadMoreButton">Show more results</button>
-				<div id="moreSearchResults">
+					<div id="moreSearchResults">
 				</div>
 			</c:when>
 		</c:choose>

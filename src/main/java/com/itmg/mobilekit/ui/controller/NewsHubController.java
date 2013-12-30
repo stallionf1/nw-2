@@ -221,14 +221,22 @@ public class NewsHubController {
 			String sessionCategory = getCategoryFromSession(session);
 			String requestCategory = req.getParameter("menuItemParam");
 			
-			System.out.println("--session category = " + sessionCategory);
-			System.out.println("--- nrequest category = " + requestCategory);
-			
 			if(sessionCategory == null && requestCategory == null) {
 				searchCategory = "all";
 			} else {			
 				searchCategory = (requestCategory != null) ? extractMenuNameFromUrl(requestCategory) : sessionCategory;
 			}
+			
+//			if (userHasChangedCountry(sessionCountry, requestCountry)) {
+//				logger.debug("User has changed country. Reset category to default");
+//				searchCategory = "all";
+//			}
+			if (requestCountry != null) {
+				//user is changing country. Reset category
+				searchCategory = "all";
+				
+			}
+			
 			updateSessionCategory( searchCategory, session);
 						
 			List<MenuItemAO> list = service.listMenuItems(searchCountry, req.getRemoteAddr());
@@ -266,6 +274,13 @@ public class NewsHubController {
 		return "mobile_index";
 	}
 	
+	private boolean userHasChangedCountry(String sessionCountry, String requestCountry) {	
+		if (requestCountry != null) {
+			
+		}
+		return !sessionCountry.equals(requestCountry) ;
+	}
+
 	private String getSessionCountry(HttpSession session) {
 		Object res = session.getAttribute(Config.getInstance().getSessionCountry());
 		return res != null ? (String)res : "ua";
