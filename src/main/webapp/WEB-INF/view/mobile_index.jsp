@@ -82,43 +82,45 @@
 		</div>
 		<br />
 		
-		<div id="top_news" class="top_news"> 
-		<p>TOP NEWS</p>
-		<!-- Move it to separate jsp page for showing NewsContent -->
-			<c:forEach var="newsObject" items="${topNews}">
-		<a href="			
-					<c:choose>
-				      <c:when test="${newsObject.parsed == true}">
-				      	<c:out value="${newsObject.short_url}" />
-				      </c:when>
-				      <c:otherwise>
-				      	<c:out value="${newsObject.news_url}" />      
-				      </c:otherwise>
-					</c:choose>"
-						class="block left"> <img class="left" width="140"
-						src="<c:out value="${newsObject.img_src}" />"
-						alt="<c:out value="${newsObject.img_alt}" />" />
-					</a> <span class="date block"> <c:out
-							value="${newsObject.date_updated}" /></span>
-							
-<a href="			
-	<c:choose>
-      <c:when test="${newsObject.parsed == true}">
-      	<c:out value="${newsObject.short_url}" />
-      </c:when>
-      <c:otherwise>
-      	<c:out value="${newsObject.news_url}" />      
-      </c:otherwise>
-	</c:choose>"
-						class="news-title block"> <c:out
-							value="${newsObject.news_title}" />
-					</a>
-					<p>
-						<span><c:out value="${newsObject.news_content}" /></span>
-					</p>
-		</c:forEach>
-			<!-- Move it to separate jsp page for showing NewsContent  END -->
-		</div>
+		<c:choose>
+			<c:when test="${!empty topNews}">
+				<div id="top_news" class="top_news"> 
+					<p>TOP NEWS</p>	
+						<c:forEach var="newsObject" items="${topNews}">
+							<a href="			
+								<c:choose>
+							      <c:when test="${newsObject.parsed == true}">
+							      	<c:out value="${newsObject.short_url}" />
+							      </c:when>
+							      <c:otherwise>
+							      	<c:out value="${newsObject.news_url}" />      
+							      </c:otherwise>
+								</c:choose>"
+									class="block left"> <img class="left" width="140"
+									src="<c:out value="${newsObject.img_src}" />"
+									alt="<c:out value="${newsObject.img_alt}" />" />
+								</a> <span class="date block"> <c:out
+										value="${newsObject.date_updated}" /></span>
+										
+								<a href="			
+									<c:choose>
+								      <c:when test="${newsObject.parsed == true}">
+								      	<c:out value="${newsObject.short_url}" />
+								      </c:when>
+								      <c:otherwise>
+								      	<c:out value="${newsObject.news_url}" />      
+								      </c:otherwise>
+									</c:choose>"
+									class="news-title block"> <c:out
+										value="${newsObject.news_title}" />
+								</a>
+								<p>
+									<span><c:out value="${newsObject.news_content}" /></span>
+								</p>
+						</c:forEach>			
+				</div>
+			</c:when>
+		</c:choose>
 		
 		<div id="main_news" class="news">
 			<p>NEWS</p>

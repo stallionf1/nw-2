@@ -50,10 +50,7 @@
    <br/>
 		<div id="searched_news" class="news">
 				<c:forEach var="newsObject" items="${mainNewsList}">
-				<div class="news-item">
-
-					<p>parsed="${newsObject.parsed}"</p>
-					<p>parsed="${newsObject.news_id}"</p>
+				<div class="news-item">			
 
 				<a href="			
 					<c:choose>
@@ -90,7 +87,7 @@
 			</c:forEach>
 		</div>
 		<c:choose>
-			<c:when test="${mainNewsList.size() > 2}">
+			<c:when test="${mainNewsList.size() > 5}">
 				<button id="loadMoreButton">Show more results</button>
 				<div id="moreSearchResults">
 				</div>

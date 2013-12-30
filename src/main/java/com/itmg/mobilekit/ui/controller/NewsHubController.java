@@ -240,20 +240,22 @@ public class NewsHubController {
 			if (weather != null) {
 				uiModel.addAttribute("weatherData", weather);
 			}
+			
 			List<NewsContentAO> news = new ArrayList<NewsContentAO>();
+			List<NewsContentAO> topNews = new ArrayList<NewsContentAO>();
+			
 			if (requestCategory != null) {
 				news = service.loadNewsByMenuSectionAndCountry(searchCategory, searchCountry, req.getRemoteAddr(), "1", "NO");
 			} else {
-				 news = service.listMainNews(searchCountry, "1", "NO", req.getRemoteAddr());	
+				 news = service.listMainNews(searchCountry, "1", "NO", req.getRemoteAddr());
+				 topNews = service.getTopNews(getSessionCountry(session), req.getRemoteAddr());
+				 uiModel.addAttribute("topNews", topNews);
 			}
-			uiModel.addAttribute("mainNewsList", news);  
 			
-			List<NewsContentAO> topNews = service.getTopNews(getSessionCountry(session), req.getRemoteAddr());
-			uiModel.addAttribute("topNews", topNews);
+			uiModel.addAttribute("mainNewsList", news);  
 			
 			List<NewsContentAO> sessionNews= new ArrayList<NewsContentAO>(news);
 			sessionNews.addAll(topNews);
-			
 			
 			session.setAttribute("mainNewsList", sessionNews);
 			
