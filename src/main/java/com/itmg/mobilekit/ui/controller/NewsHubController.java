@@ -517,7 +517,7 @@ public class NewsHubController {
 		PrintWriter out = response.getWriter();
 
 		out.write("<img class=\"left\" width=\"140\" src="
-				+ fullNewsContent.getImg_src() + "" + "alt="
+				+ fullNewsContent.getImg_src() + "" + " alt="
 				+ fullNewsContent.getImg_alt() + " />"
 				+ "<span class=\"date block\">"
 				+ fullNewsContent.getDate_updated() + "</span>"
