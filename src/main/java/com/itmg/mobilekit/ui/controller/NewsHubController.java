@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -333,10 +335,7 @@ public class NewsHubController {
 	}
 	
 	private String cleanSearchKeyword(String keyword) {		
-		return (keyword == null ) ? "" : keyword.trim()
-				.replaceAll(" ", "%20")
-				.replaceAll("\"", "")
-				.replaceAll("'", "");				
+		return (keyword == null) ? "" : keyword.trim().replaceAll("[!@#$%^&*()_+=|?]", "").replaceAll(" ", "%20"); 
 	}
 	
 	@RequestMapping("/load_more_search_results")

@@ -9,22 +9,36 @@ import org.apache.http.concurrent.FutureCallback;
 @Deprecated
 public class TetstHttpClient {
 
+	private static void clean (String keyword) {
+		String res = (keyword == null) ? "" : keyword.replaceAll("[!@#$%^&*()_+=|?]", "").replaceAll(" ", "%20"); 
+		System.out.println(res);
+	}
 	public static void main(final String[] args) throws Exception {
+		clean(" a");
+		clean(" abc abd ");
+		clean("aaa!!aa&^%$#@)(*END");
+		clean("AAA[]");
+		clean("a dog is&^%%$#@!)(&&_+ running!");
+
 		
-		String test = "http://uaddd.newshub.org";
-		
-		String code = test.substring(test.indexOf("//") +2, test.indexOf("."));
-		
-		System.out.println("--code = "+code);
 		
 		
-		String menuItem = "http://ua.newshub.org/business";
 		
-		int lenght = menuItem.length();
-		int x = menuItem.lastIndexOf("/");
 		
-		String res = menuItem.substring(x+1, lenght);
-		System.out.println("--- menu item = " + res);
+//		String test = "http://uaddd.newshub.org";
+//		
+//		String code = test.substring(test.indexOf("//") +2, test.indexOf("."));
+//		
+//		System.out.println("--code = "+code);
+//		
+//		
+//		String menuItem = "http://ua.newshub.org/business";
+//		
+//		int lenght = menuItem.length();
+//		int x = menuItem.lastIndexOf("/");
+//		
+//		String res = menuItem.substring(x+1, lenght);
+//		System.out.println("--- menu item = " + res);
 		
 		
 //		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(3000).setConnectTimeout(3000).build();
