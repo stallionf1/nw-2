@@ -2,8 +2,6 @@ package com.itmg.mobilekit.ui.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -211,6 +209,7 @@ public class NewsHubController {
 	public String mainForm(Model uiModel, HttpServletRequest req, HttpServletResponse response) { 
 		
 		try {
+			
 			HttpSession session = req.getSession();
 			
 			String searchCountry = "";
@@ -220,13 +219,18 @@ public class NewsHubController {
 			searchCountry = (requestCountry == null) ? sessionCountry : requestCountry;
 			updateSessionCountry(searchCountry, session);
 			
-			System.out.println("--session country = " + getCountryFromSession(session));
-			
 			String searchCategory = "all"; //by default - all.
-			String sessionCategory = getCountryFromSession(req.getSession());
+			String sessionCategory = getCategoryFromSession(session);
 			String requestCategory = req.getParameter("menuItemParam");
 			
-			searchCategory = (requestCategory != null) ? extractMenuNameFromUrl(requestCategory) : sessionCategory;
+			System.out.println("--session category = " + sessionCategory);
+			System.out.println("--- nrequest category = " + requestCategory);
+			
+			if(sessionCategory == null && requestCategory == null) {
+				searchCategory = "all";
+			} else {			
+				searchCategory = (requestCategory != null) ? extractMenuNameFromUrl(requestCategory) : sessionCategory;
+			}
 			updateSessionCategory( searchCategory, session);
 						
 			List<MenuItemAO> list = service.listMenuItems(searchCountry, req.getRemoteAddr());
@@ -234,18 +238,13 @@ public class NewsHubController {
 			uiModel.addAttribute("countryItemsList", service.listAllCountries(req.getRemoteAddr()));
 			
 			WeatherData weather = service.loadWeatherData(req.getRemoteAddr());
-			System.out.println("--- loaded weather" + weather);
+			
 			if (weather != null) {
 				uiModel.addAttribute("weatherData", weather);
 			}
-			
-			
-			System.out.println("+++++++++++++++++++++");
-			System.out.println("--searchung by country:" + searchCountry + ", and category="+searchCategory);
-			
 			List<NewsContentAO> news = new ArrayList<NewsContentAO>();
 			if (requestCategory != null) {
-				news = service.loadNewsByMenuSectionAndCountry(requestCategory, searchCountry, req.getRemoteAddr(), "1", "NO");
+				news = service.loadNewsByMenuSectionAndCountry(searchCategory, searchCountry, req.getRemoteAddr(), "1", "NO");
 			} else {
 				 news = service.listMainNews(searchCountry, "1", "NO", req.getRemoteAddr());	
 			}
@@ -343,7 +342,10 @@ public class NewsHubController {
 	@RequestMapping("/load_more_news")
 	public void scrollExample (Model uiModel, HttpServletRequest req, HttpServletResponse response) {
 		String data = req.getParameter("data");
-		try {			
+		try {
+			
+			
+			
 			List<NewsContentAO> moreNewsList = service.listMainNews(getCountryFromSession(req.getSession()), data, "NO", req.getRemoteAddr());
 		
 			response.setContentType( "text/html" );

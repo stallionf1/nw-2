@@ -329,15 +329,16 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 		try {			
 			HttpURLConnection con = (HttpURLConnection) (new URL(Config.getInstance().getLocale_host())).openConnection();
 			con.setInstanceFollowRedirects(false);
+			if (usersIp.equals("127.0.0.1")) {
+				usersIp = "176.106.1.193";
+			}
 			con.addRequestProperty(Config.getInstance().getForwardHeader(), usersIp);
 			con.connect();
-		
-			System.out.println("----------- location header response =" + con.getHeaderField("Location")+".");
+			
 			String code = extractLocaleCode(con.getHeaderField("Location"));
-			
 			logger.debug(String.format("Fetched user's country as: %s for IP:%s", code, usersIp));
-			
 			con.disconnect();
+			
 			return code;
 		} catch (MalformedURLException e) {
 			logger.error("Can not get URL connection for Locale check.", e);
