@@ -6,9 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Search</title>
 
-<!--JQUERY-->
-  <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>	
-
+  <!--JQUERY-->
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
   <script type="text/javascript">
   var pageId = 2;
   $(document).ready(function(){
@@ -36,24 +35,31 @@
 %>
 
 <div id="container">
-<button onclick="window.history.go(-1)">Back</button>
-<br/>	
+ <button onclick="window.history.go(-1)">Back</button>
+ <br/>	
     <div class="search clearfix">
         <form action="search" method="GET" name="searchForm" accept-charset="UTF-8">
             <div class="search-inp left">
-                <input name="searchParam" class="q" type="text" value="" placeholder="Search"/>
+                <input name="searchParam" class="q" type="text" value="${searchParam}" placeholder="Search"/>
                 <input type="hidden" name="country" value="ua">                
             </div>
             <button class="cur-p searchBtn" type="submit" value="">Search</button>
         </form>
-    </div>
+    	<TABLE BORDER="0">
+				<TR>
+					<c:forEach items="${menuItemsList}" var="menuItem">
+						<TD>
+							<form method="post" action="search"> 
+								<input type="hidden" name="menuItemParam"   value="${menuItem.url}" />
+								<input type="submit" name="${menuItem.url}" value="${menuItem.name}" />
+							</form>
+						</TD>
+					</c:forEach>
+				</TR>
+			</TABLE>
    <br/>
-   
-   <p>
-   	total found - ${mainNewsList.size()}.
-   </p>
-   
-		<div id="searched_news" class="news">
+   </div>
+   <div id="searched_news" class="news">
 				<c:forEach var="newsObject" items="${mainNewsList}">
 				<div class="news-item">			
 
@@ -92,13 +98,12 @@
 			</c:forEach>
 		</div>
 		<c:choose>
-			<c:when test="${mainNewsList.size() > 4}">
+			<c:when test="${mainNewsList.size() > 5}">
 				<button id="loadMoreButton">Show more results</button>
 					<div id="moreSearchResults">
 				</div>
 			</c:when>
-		</c:choose>
-		
+		</c:choose>		
 	</div>
 </body>
 </html>

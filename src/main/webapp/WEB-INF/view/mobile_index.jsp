@@ -80,7 +80,7 @@
 				<button class="cur-p searchBtn" type="submit" value="">Search</button>
 			</form>
 		</div>
-		<br />
+		<br/>
 		
 		<c:choose>
 			<c:when test="${!empty topNews}">

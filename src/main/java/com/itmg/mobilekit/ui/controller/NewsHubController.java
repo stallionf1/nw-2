@@ -239,6 +239,7 @@ public class NewsHubController {
 						
 			List<MenuItemAO> list = service.listMenuItems(searchCountry, req.getRemoteAddr());
 			uiModel.addAttribute("menuItemsList", list);
+			session.setAttribute("categoriesList", list);
 			uiModel.addAttribute("countryItemsList", service.listAllCountries(req.getRemoteAddr()));
 			
 			WeatherData weather = service.loadWeatherData(req.getRemoteAddr());
@@ -314,22 +315,32 @@ public class NewsHubController {
 	}
 	
 	@RequestMapping("/search")
-	public String searchNews(Model uiModel, HttpServletRequest req, HttpServletResponse response) {
-		
+	public String searchNews(Model uiModel, HttpServletRequest req, HttpServletResponse response) {		
 		try {
 			
-			String searchParam = cleanSearchKeyword(req.getParameter("searchParam"));
+			HttpSession session = req.getSession();
+			
+			String searchParam = cleanSearchKeyword(req.getParameter("searchParam"));			
+			if (req.getParameter("searchParam") == null) {
+				searchParam = (String)session.getAttribute("searchParam");
+			}
+			
+			System.out.println("-- search param ="+searchParam);
 			
 			List<NewsContentAO> searched = service.searchNewsBy(
 					searchParam,
 					getSessionCountry(req.getSession()), 
-					req.getParameter("categoryCode"), "1", req.getRemoteAddr());
+					req.getParameter("menuItemParam") != null ? extractMenuNameFromUrl(req.getParameter("menuItemParam")) : "all", 
+					"1", 
+					req.getRemoteAddr());
 			
 			uiModel.addAttribute("mainNewsList", searched);
 			
-			HttpSession session = req.getSession();
+		
 			session.setAttribute("mainNewsList", searched);
 			session.setAttribute("searchParam", searchParam);
+			
+			uiModel.addAttribute("menuItemsList", session.getAttribute("categoriesList"));
 			
 		} catch (MobileKitServiceException e) {
 			logger.error("Failed to do search.", e);

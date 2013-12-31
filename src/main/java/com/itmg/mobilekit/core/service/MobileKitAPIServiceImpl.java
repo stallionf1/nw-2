@@ -560,7 +560,7 @@ public class MobileKitAPIServiceImpl implements MobileKitAPIService {
 	}
 	
 	private String getSearchNewsLink(String searchParam, String countryCode, String categoryCode, String pageId) {
-		String url = String.format("%s%s%s%s&searchParam=%s&countryCode=%s&category=%s&pageId=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
+		String url = String.format("%s%s%s%s&searchParam=%s&countryCode=%s&categoryCode=%s&pageId=%s", Config.getInstance().getHost(), Config.getInstance().getApi_suffix(), 
 				"/searchNewsBy?", Config.getInstance().getToken(), searchParam, countryCode, categoryCode == null ? "all" : categoryCode, pageId);
 		
 		return url;
