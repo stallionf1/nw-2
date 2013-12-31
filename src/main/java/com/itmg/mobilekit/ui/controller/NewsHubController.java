@@ -357,12 +357,21 @@ public class NewsHubController {
 	@RequestMapping("/load_more_search_results")
 	public void loadMoreSearchresults(HttpServletRequest req, HttpServletResponse response) {
 		String pageId = req.getParameter("data");
+		
 		try {			
 			HttpSession session = req.getSession();
+			
+			String searchparam = cleanSearchKeyword((String)session.getAttribute("searchParam"));
+			logger.debug(String.format("Loading more search results keyword=%s, for pageId=%s", searchparam, pageId));
+			
 			List<NewsContentAO> searched = service.searchNewsBy(
-					(String)session.getAttribute("searchParam"),
-					getCountryFromSession(session), 
-					req.getParameter("categoryCode"), pageId, req.getRemoteAddr());
+					cleanSearchKeyword((String)session.getAttribute("searchParam")),
+					getSessionCountry(req.getSession()), 
+					req.getParameter("menuItemParam") != null ? extractMenuNameFromUrl(req.getParameter("menuItemParam")) : "all", 
+					pageId, 
+					req.getRemoteAddr());
+			
+			logger.debug(String.format("Searched for more wirh result of:%d", searched.size()));
 			
 			List<NewsContentAO> sessionNnews = (List<NewsContentAO>)session.getAttribute("mainNewsList");
 			
