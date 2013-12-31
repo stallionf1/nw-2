@@ -316,13 +316,14 @@ public class NewsHubController {
 	
 	@RequestMapping("/search")
 	public String searchNews(Model uiModel, HttpServletRequest req, HttpServletResponse response) {		
-		try {
-			
+		try {			
 			HttpSession session = req.getSession();
 			
-			String searchParam = cleanSearchKeyword(req.getParameter("searchParam"));			
+			String searchParam = "";								
 			if (req.getParameter("searchParam") == null) {
-				searchParam = (String)session.getAttribute("searchParam");
+				searchParam = cleanSearchKeyword((String)session.getAttribute("searchParam"));
+			} else {
+				searchParam = cleanSearchKeyword(req.getParameter("searchParam"));
 			}
 			
 			System.out.println("-- search param ="+searchParam);
@@ -338,7 +339,7 @@ public class NewsHubController {
 			
 		
 			session.setAttribute("mainNewsList", searched);
-			session.setAttribute("searchParam", searchParam);
+			session.setAttribute("searchParam", searchParam.replaceAll("%20", " "));
 			
 			uiModel.addAttribute("menuItemsList", session.getAttribute("categoriesList"));
 			
@@ -350,7 +351,7 @@ public class NewsHubController {
 	}
 	
 	private String cleanSearchKeyword(String keyword) {		
-		return (keyword == null) ? "" : keyword.trim().replaceAll("[!@#$%^&*()_+=|?\"']", "").replaceAll(" ", "%20"); 
+		return (keyword == null) ? "" : keyword.trim().replaceAll("[!@#$%^&*()_+=|?\"':;№]", "").replaceAll(" ", "%20"); 
 	}
 	
 	@RequestMapping("/load_more_search_results")
