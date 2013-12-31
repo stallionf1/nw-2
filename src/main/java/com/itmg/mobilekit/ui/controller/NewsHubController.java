@@ -454,11 +454,11 @@ public class NewsHubController {
 	private void writeNewsObject(NewsContentAO item, PrintWriter out) {
 		out.write("<div class=\"news-item\">");
 		if (item.isParsed()) {
-			out.write("<a href=" + item.getShort_url() + "class=\"block left\"><img class=\"left\" width=\"140\" src="
+			out.write("<a href=" + item.getShort_url() + " class=\"block left\"><img class=\"left\" width=\"140\" src="
 					+ item.getImg_src() + " alt=" + item.getImg_alt()
 					+ "/></a>");
 		} else {
-			out.write("<a href=" + item.getNews_url() + "class=\"block left\"><img class=\"left\" width=\"140\" src="
+			out.write("<a href=" + item.getNews_id() + " class=\"block left\"><img class=\"left\" width=\"140\" src="
 					+ item.getImg_src() + " alt=" + item.getImg_alt()
 					+ "/></a>");
 		}
@@ -469,7 +469,7 @@ public class NewsHubController {
 			out.write("<a href=" + item.getShort_url() + " class=\"news-title block\">"
 					+ item.getNews_title() + "</a>");
 		} else {
-			out.write("<a href=" + item.getNews_url() + " class=\"news-title block\">"
+			out.write("<a href=" + item.getNews_id() + " class=\"news-title block\">"
 					+ item.getNews_title() + "</a>");
 		}
 	
