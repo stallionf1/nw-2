@@ -98,7 +98,7 @@
 			</c:forEach>
 		</div>
 		<c:choose>
-			<c:when test="${mainNewsList.size() > 5}">
+			<c:when test="${mainNewsList.size() >= 5}">
 				<button id="loadMoreButton">Show more results</button>
 					<div id="moreSearchResults">
 				</div>
