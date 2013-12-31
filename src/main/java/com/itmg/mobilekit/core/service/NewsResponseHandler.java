@@ -55,15 +55,19 @@ public class NewsResponseHandler extends BaseResponseHandler implements Response
 			while (litr.hasNext()) {
 				NewsContentAO element = litr.next();
 				if (element.isParsed()) {
-					String shortUrl = extractShortUrlFromUrl(element.getNews_url());
-					element.setShort_url(shortUrl);
+//					String shortUrl = extractShortUrlFromUrl(element.getNews_url());
+//					if ("".equals(shortUrl)) {
+//						element.setShort_url(element.getNews_id());
+//					} else {
+//						element.setShort_url(shortUrl);
+//					}
+					element.setShort_url(element.getNews_id());
 					litr.set(element);
 				}
-			}
-		      
+			} 
 			return parsedList;
 	        
-	    }
+	  }
 	  private String extractShortUrlFromUrl(String menuItem) {
 			
 			int lenght = menuItem.length();
@@ -71,6 +75,7 @@ public class NewsResponseHandler extends BaseResponseHandler implements Response
 			
 			String res = menuItem.substring(x+1, lenght);
 			System.out.println("--- short URL = " + res);
+			
 			return res;
 		}
 }

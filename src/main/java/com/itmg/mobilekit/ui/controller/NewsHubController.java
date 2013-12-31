@@ -3,11 +3,8 @@ package com.itmg.mobilekit.ui.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -278,38 +275,37 @@ public class NewsHubController {
 		return res != null ? (String)res : "ua";
 	}
 	
-	private String extractMenuNameFromUrl(String menuItem) {
-		
+	private String extractMenuNameFromUrl(String menuItem) {		
 		int lenght = menuItem.length();
-		int x = menuItem.lastIndexOf("/");
-		
-		String res = menuItem.substring(x+1, lenght);
-		
+		int x = menuItem.lastIndexOf("/");		
+		String res = menuItem.substring(x+1, lenght);		
 		return res;
 	}
 	
 	@RequestMapping("/{news_url}")
-	public String loadNewsDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {
-		
-		NewsContentAO newsAo = findNewsByIdOrUrl(news_url, req.getSession());
+	public String loadNewsDetails(@PathVariable String news_url, Model uiModel, HttpServletRequest req, HttpServletResponse response) {	
 		HttpSession session = req.getSession();
-		
-		if (newsAo.isParsed()) {		
-			try {
-				logger.debug(String.format("Loading news details for news_id=", newsAo.getNews_id()));
-				uiModel.addAttribute("currentNewsId", newsAo.getNews_id());
+		try {
+			NewsContentAO newsAo  = findNewsByIdOrUrl(news_url, req.getSession());
+			if (newsAo.isParsed()) {		
+				try {
+					logger.debug(String.format("Loading news details for news_id=", newsAo.getNews_id()));
+					uiModel.addAttribute("currentNewsId", newsAo.getNews_id());
 				
-				NewsContentAO newsContent = service.loadNewsDetails(newsAo.getNews_id(), getCountryFromSession(req.getSession()), req.getRemoteAddr());
+					NewsContentAO newsContent = service.loadNewsDetails(newsAo.getNews_id(), getCountryFromSession(req.getSession()), req.getRemoteAddr());
 		
-				uiModel.addAttribute("newsObject", newsContent);		
-				session.setAttribute("currentNewsId", newsContent.getNews_id());
+					uiModel.addAttribute("newsObject", newsContent);		
+					session.setAttribute("currentNewsId", newsContent.getNews_id());
 				
-			} catch (MobileKitServiceException e) {
-				logger.error(String.format("Failed to get news details for news_id=%s",  newsAo.getNews_id()), e);
+				} catch (MobileKitServiceException e) {
+					logger.error(String.format("Failed to get news details for news_id=%s",  newsAo.getNews_id()), e);
+				}
+			} else {
+				uiModel.addAttribute("newsObject", newsAo);		
+				session.setAttribute("currentNewsId", newsAo.getNews_id());
 			}
-		} else {
-			uiModel.addAttribute("newsObject", newsAo);		
-			session.setAttribute("currentNewsId", newsAo.getNews_id());
+		} catch (MobileKitServiceException e1) {
+			logger.fatal("News NOT found!!!!!", e1);
 		}
 		return "news_content";				
 	}
@@ -326,8 +322,6 @@ public class NewsHubController {
 				searchParam = cleanSearchKeyword(req.getParameter("searchParam"));
 			}
 			
-			System.out.println("-- search param ="+searchParam);
-			
 			List<NewsContentAO> searched = service.searchNewsBy(
 					searchParam,
 					getSessionCountry(req.getSession()), 
@@ -337,7 +331,6 @@ public class NewsHubController {
 			
 			uiModel.addAttribute("mainNewsList", searched);
 			
-		
 			session.setAttribute("mainNewsList", searched);
 			session.setAttribute("searchParam", searchParam.replaceAll("%20", " "));
 			
@@ -378,7 +371,7 @@ public class NewsHubController {
 			sessionNnews.addAll(searched);
 			session.setAttribute("mainNewsList", sessionNnews);
 			
-			response.setContentType( "text/html" );
+			response.setContentType("text/html");
 			response.setCharacterEncoding( "UTF-8" );
 			
 			PrintWriter out = response.getWriter();
@@ -408,16 +401,18 @@ public class NewsHubController {
 		return "NOT_FOUND"; //dummy paramenter.
 	}
 	
-	private NewsContentAO findNewsByIdOrUrl(String urlOrId, HttpSession session) {
+	private NewsContentAO findNewsByIdOrUrl(String urlOrId, HttpSession session) throws MobileKitServiceException {
 		if (session.getAttribute("mainNewsList") != null) {
 			List<NewsContentAO> news = (List<NewsContentAO>) session.getAttribute("mainNewsList");
 			for (NewsContentAO element : news) {
-				if (element.getNews_url().contains(urlOrId) || element.getNews_id().equals(urlOrId)) {
+				if (element.getNews_url().contains(urlOrId)
+						|| element.getNews_id().equals(urlOrId)
+						|| element.getNews_title().equals(urlOrId)) {
 					return element;
 				}
 			}
 		}
-		return null; 
+		throw new MobileKitServiceException(String.format("News with id or url or title:%s not found in session!", urlOrId)); 
 	}
 
 	@RequestMapping("/tmp")
@@ -478,8 +473,10 @@ public class NewsHubController {
 			out.write("<a href=" + item.getShort_url() + " class=\"block left\"><img class=\"left\" width=\"140\" src="
 					+ item.getImg_src() + " alt=" + item.getImg_alt()
 					+ "/></a>");
-		} else {
-			out.write("<a href=" + item.getNews_id() + " class=\"block left\"><img class=\"left\" width=\"140\" src="
+		} else {			
+			String unique = (item.getNews_id() == null || "".equals(item.getNews_id())) ? item.getNews_title() : item.getNews_id();
+			
+			out.write("<a href=" +unique + " class=\"block left\"><img class=\"left\" width=\"140\" src="
 					+ item.getImg_src() + " alt=" + item.getImg_alt()
 					+ "/></a>");
 		}
@@ -573,7 +570,11 @@ public class NewsHubController {
 				+ "</b></p><p>" + "<span>"
 				+ fullNewsContent.getNews_content() + "</span></p>");
 		if (!fullNewsContent.isParsed()) {
-			out.write("<a href="+fullNewsContent.getNews_url() +">read more</a>");
+			if (fullNewsContent.getNews_id() == null || "".equals(fullNewsContent.getNews_id())) {
+				out.write("<a href="+fullNewsContent.getNews_title() +">read more</a>");
+			} else {
+				out.write("<a href="+fullNewsContent.getNews_url() +">read more</a>");
+			}
 		}
 		
 		out.write("<input type=\"hidden\" name=\"newsId\" value="+ fullNewsContent.getNews_id() + "/>");

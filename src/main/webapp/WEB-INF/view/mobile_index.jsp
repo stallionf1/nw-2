@@ -80,7 +80,7 @@
 				<button class="cur-p searchBtn" type="submit" value="">Search</button>
 			</form>
 		</div>
-		<br/>
+		<br />
 		
 		<c:choose>
 			<c:when test="${!empty topNews}">
@@ -93,7 +93,7 @@
 							      	<c:out value="${newsObject.short_url}" />
 							      </c:when>
 							      <c:otherwise>
-							      	<c:out value="${newsObject.news_id}" />      
+							      	<c:out value="${newsObject.news_url}" />      
 							      </c:otherwise>
 								</c:choose>"
 									class="block left"> <img class="left" width="140"
@@ -137,7 +137,7 @@
 					      	<c:out value="${newsObject.short_url}" />
 					      </c:when>
 					      <c:otherwise>
-					      	<c:out value="${newsObject.news_id}" />      
+					      	<c:out value="${newsObject.news_url}" />      
 					      </c:otherwise>
 						</c:choose>"
 											class="block left"> <img class="left" width="140"
