@@ -185,10 +185,10 @@
 		</div>
 	</div>
 	
-<button id="buttonUpload">Load more</button>
+<!-- <button id="buttonUpload">Load more</button>
   <br />
   <hr />
- <div id="dataUpload"></div>
+ <div id="dataUpload"></div> -->
 	
 </body>
 </html>
