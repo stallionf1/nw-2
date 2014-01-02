@@ -467,6 +467,11 @@ public class NewsHubController {
 		}	
 	}
 	
+	@RequestMapping()
+	public void testDownScrolling() {
+		
+	}
+	
 	private void writeNewsObject(NewsContentAO item, PrintWriter out) {
 		out.write("<div class=\"news-item\">");
 		if (item.isParsed()) {

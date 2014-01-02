@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>NewsHub.org</title>
 
-<!--JQUERY-->
+  <!--JQUERY-->
   <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>	
 
   <script type="text/javascript">
@@ -27,14 +27,30 @@
        });
      });
     });
+  
+  $(document).ready(function(){
+	  $(window).scroll(function() {  
+      if($(window).scrollTop() + $(window).height() == $(document).height()) {
+    	 //AJAX   
+    	  $.ajax({
+    	         url: "load_more_news",
+    	         type: "GET",
+    	         cache:true,
+    	         data: {data:pageId}, 
+    	         dataType:"html",
+    	         success: function(newsObject){   
+    	          	 $("#main_news").append(newsObject);
+    	        	 pageId++;
+    	         }
+    	       });
+      }
+  	 });
+  });
   </script>
-
-</head>
+ </head>
 <body>
-
 	<%
-       request.setCharacterEncoding("UTF-8");
-       
+       request.setCharacterEncoding("UTF-8");       
      %>
 
 	<div id="container">
